@@ -7,11 +7,11 @@ library("rvest") #Library for web scraping
 library("dplyr") #Library for dataframes manipulations
 
 
-##### Météo France historical Data :
+##### MÃ©tÃ©o France historical Data :
 
-# On Météo France's website, we have access to historical weather data near Villandry. 
+# On MÃ©tÃ©o France's website, we have access to historical weather data near Villandry. 
 # We have for every day since 1950 : max temperature, precipitation, sunshine, description of the weather at 10am, 1pm and 4 pm.
-# This service is no longer available. 
+# (This service is no longer available)
 meteo <- data.frame(DATE = rep(".", 31*12*29), meteo = rep(".", 31*12*29))
 meteo$DATE <- as.character(meteo$DATE)
 meteo$meteo <- as.character(meteo$meteo)
@@ -32,8 +32,8 @@ for (year in 1991:2019){
 meteo$DATE <- as.Date(meteo$DATE)
 meteo$DATE <- as.character(meteo$DATE)
 
-# We often get the same error for many lines. This part correct this problem. 
-error <- "     Services et innovations Découvrez notre rapport annuel digital  Climat, météorologie, technologies ...        Exposition numérique 150 ans d'histoire du climat  A la reconquête d'observations anciennes pour mieux connaître le climat.    "
+# We find the same error for many lines. This section corrects the problem.
+error <- "     Services et innovations DÃ©couvrez notre rapport annuel digital  Climat, mÃ©tÃ©orologie, technologies ...        Exposition numÃ©rique 150 ans d'histoire du climat  A la reconquÃªte d'observations anciennes pour mieux connaÃ®tre le climat.    "
 for(date in meteo$DATE[meteo$meteo == error]){
   url <- paste("http://www.meteofrance.com/climat/meteo-date-passee?lieuId=372610&lieuType=VILLE_FRANCE&date=", substr(date,9,10),"-", substr(date,6,7), "-", substr(date,1,4), sep = "")
   meteo$meteo[meteo$DATE == date] <- html_text(html_node(read_html(url), xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "grid-half", " " ))]'))
@@ -101,7 +101,7 @@ meteo <- meteo[as.Date(meteo$DATE) < "2019-12-01",]
 
 temp <- strsplit(meteo$meteo, split = " ")
 temp <- data.frame(matrix(unlist(temp), nrow=length(temp), byrow=T))
-meteo$Temp.max <- as.numeric(sub("°C", "", temp[,14]))
+meteo$Temp.max <- as.numeric(sub("Â°C", "", temp[,14]))
 meteo$Precipitation <- as.numeric(sub("mm", "", temp[,26]))
 meteo$Ensoleillement <- as.numeric(sub("h", "", temp[,21]))
 
@@ -144,7 +144,7 @@ for (year in 2009:2019){
 # We now have non-uniform labels because of the double sources of the data. We will bring together 
 # the labels that are very close. 
 
-# First, from the data of Météo France, we reduce the number of labels : 
+# First, from the data of MÃ©tÃ©o France, we reduce the number of labels : 
 # (some of them are extremely rare and therefore  not very usable) 
 meteo$Desc_10h <- as.character(meteo$Desc_10h)
 meteo$Desc_13h <- as.character(meteo$Desc_13h)
@@ -159,13 +159,13 @@ meteo$Desc_10h[meteo$Desc_10h %in% c("Neige forte", "Quelques flocons")] <- "Nei
 meteo$Desc_13h[meteo$Desc_13h %in% c("Neige forte", "Quelques flocons")] <- "Neige"
 meteo$Desc_16h[meteo$Desc_16h %in% c("Neige forte", "Quelques flocons")] <- "Neige"
 #Reunion of rains
-meteo$Desc_10h[meteo$Desc_10h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaçante", "Pluies éparses")] <- "Pluies"
-meteo$Desc_13h[meteo$Desc_13h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaçante", "Pluies éparses")] <- "Pluies"
-meteo$Desc_16h[meteo$Desc_16h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaçante", "Pluies éparses")] <- "Pluies"
+meteo$Desc_10h[meteo$Desc_10h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaÃ§ante", "Pluies Ã©parses")] <- "Pluies"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaÃ§ante", "Pluies Ã©parses")] <- "Pluies"
+meteo$Desc_16h[meteo$Desc_16h %in% c("Pluie et neige", "Pluie forte", "Pluie verglaÃ§ante", "Pluies Ã©parses")] <- "Pluies"
 #Reunion of hail and thunderstorms
-meteo$Desc_10h[meteo$Desc_10h == "Risque de grêle"] <- "Risque d'orages"
-meteo$Desc_13h[meteo$Desc_13h == "Risque de grêle"] <- "Risque d'orages"
-meteo$Desc_16h[meteo$Desc_16h == "Risque de grêle"] <- "Risque d'orages"
+meteo$Desc_10h[meteo$Desc_10h == "Risque de grÃªle"] <- "Risque d'orages"
+meteo$Desc_13h[meteo$Desc_13h == "Risque de grÃªle"] <- "Risque d'orages"
+meteo$Desc_16h[meteo$Desc_16h == "Risque de grÃªle"] <- "Risque d'orages"
 #Reunion of light rains
 meteo$Desc_10h[meteo$Desc_10h %in% c("Rares averses", "Bruine")] <- "Pluie faible ou averses"
 meteo$Desc_13h[meteo$Desc_13h %in% c("Rares averses", "Bruine")] <- "Pluie faible ou averses"
@@ -184,13 +184,13 @@ meteo$Desc_13h[meteo$Desc_13h == "Pas d'obs" & meteo$meteo != ""] <- meteo$meteo
 
 
 # Uniformisation of labels between the two sources :
-meteo$Desc_13h[meteo$Desc_13h %in% c("Faibles averses de pluie", "Faibles averses de neige fondue", "Faible pluie non continue", "Faible pluie en continue", "Bruine légère partielle", "Bruine légère", "Pluie légère et soleil")] <- "Pluie faible ou averses"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Faibles averses de pluie", "Faibles averses de neige fondue", "Faible pluie non continue", "Faible pluie en continue", "Bruine lÃ©gÃ¨re partielle", "Bruine lÃ©gÃ¨re", "Pluie lÃ©gÃ¨re et soleil")] <- "Pluie faible ou averses"
 meteo$Desc_13h[meteo$Desc_13h %in% c("Soleil et partiellement nuageux")] <- "Eclaircies"
-meteo$Desc_13h[meteo$Desc_13h %in% c("Ciel dégagé, pleinement ensoleillé")] <- "Ensoleillé"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Ciel dÃ©gagÃ©, pleinement ensoleillÃ©")] <- "EnsoleillÃ©"
 meteo$Desc_13h[meteo$Desc_13h %in% c("Faibles chutes de neige en continue")] <- "Neige"
-meteo$Desc_13h[meteo$Desc_13h %in% c("Pluie modérée non continue", "Pluie modérée en continue", "Pluie forte ou modéré")] <- "Pluies"
-meteo$Desc_13h[meteo$Desc_13h %in% c("Foyers orageux à proximité", "Averses de pluie et orages")] <- "Risque d'orages"
-meteo$Desc_13h[meteo$Desc_13h %in% c("Nuageux", "Couvert")] <- "Très nuageux"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Pluie modÃ©rÃ©e non continue", "Pluie modÃ©rÃ©e en continue", "Pluie forte ou modÃ©rÃ©")] <- "Pluies"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Foyers orageux Ã  proximitÃ©", "Averses de pluie et orages")] <- "Risque d'orages"
+meteo$Desc_13h[meteo$Desc_13h %in% c("Nuageux", "Couvert")] <- "TrÃ¨s nuageux"
 
 meteo$Desc_10h <- as.factor(meteo$Desc_10h)
 meteo$Desc_13h <- as.factor(meteo$Desc_13h)
@@ -200,7 +200,7 @@ meteo$meteo <- NULL
 
 meteo$DATE <- as.Date(meteo$DATE)
 
-# We will not use the shuneshine variables because Météo France does not offer forecasting for it.
+# We will not use the shuneshine variables because MÃ©tÃ©o France does not offer forecasting for it.
 meteo$Ensoleillement <- NULL
 
 ##### New variables to describe the overall weather of the day :
@@ -226,243 +226,243 @@ temp$jour <- as.character(temp$jour)
 temp$descr_generale <- as.character(temp$descr_generale)
 temp$descr_generale[temp$jour %in% c("Brouillard Brouillard Brouillard", "Brouillard Brouillard Pas d'obs",
 "Brouillard Brouillard Pluie faible ou averses",
-"Brouillard Brouillard Très nuageux",
-"Brouillard Pas d'obs Très nuageux",
-"Brouillard Risque d'orages Très nuageux",
-"Brouillard Très nuageux Brouillard",
-"Brouillard Très nuageux Pas d'obs",
-"Brouillard Très nuageux Très nuageux",
-"Pluie faible ou averses Très nuageux Très nuageux",
-"Pas d'obs Brouillard Très nuageux",
-"Pas d'obs Risque d'orages Très nuageux",
-"Pas d'obs Très nuageux Risque d'orages",
-"Pas d'obs Très nuageux Très nuageux",
-"Risque d'orages Très nuageux Très nuageux",
-"Très nuageux Pas d'obs Risque d'orages",
+"Brouillard Brouillard TrÃ¨s nuageux",
+"Brouillard Pas d'obs TrÃ¨s nuageux",
+"Brouillard Risque d'orages TrÃ¨s nuageux",
+"Brouillard TrÃ¨s nuageux Brouillard",
+"Brouillard TrÃ¨s nuageux Pas d'obs",
+"Brouillard TrÃ¨s nuageux TrÃ¨s nuageux",
+"Pluie faible ou averses TrÃ¨s nuageux TrÃ¨s nuageux",
+"Pas d'obs Brouillard TrÃ¨s nuageux",
+"Pas d'obs Risque d'orages TrÃ¨s nuageux",
+"Pas d'obs TrÃ¨s nuageux Risque d'orages",
+"Pas d'obs TrÃ¨s nuageux TrÃ¨s nuageux",
+"Risque d'orages TrÃ¨s nuageux TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pas d'obs Risque d'orages",
 "Pas d'obs Risque d'orages Pas d'obs",
-"Pas d'obs Très nuageux Pas d'obs",
-"Pas d'obs Pas d'obs Très nuageux",
-"Très nuageux Pas d'obs Très nuageux",
-"Très nuageux Pas d'obs Pas d'obs",
+"Pas d'obs TrÃ¨s nuageux Pas d'obs",
+"Pas d'obs Pas d'obs TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pas d'obs TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pas d'obs Pas d'obs",
 "Brouillard Pas d'obs Pas d'obs",
-"Très nuageux Risque d'orages Pas d'obs",
-"Très nuageux Risque d'orages Très nuageux",
-"Très nuageux Très nuageux Pas d'obs",
-"Très nuageux Très nuageux Risque d'orages",
-"Très nuageux Très nuageux Très nuageux")] <- "Couvert"
+"TrÃ¨s nuageux Risque d'orages Pas d'obs",
+"TrÃ¨s nuageux Risque d'orages TrÃ¨s nuageux",
+"TrÃ¨s nuageux TrÃ¨s nuageux Pas d'obs",
+"TrÃ¨s nuageux TrÃ¨s nuageux Risque d'orages",
+"TrÃ¨s nuageux TrÃ¨s nuageux TrÃ¨s nuageux")] <- "Couvert"
 temp$descr_generale[temp$jour %in% c("Brouillard Brouillard Eclaircies",
-"Brouillard Brouillard Ensoleillé",
+"Brouillard Brouillard EnsoleillÃ©",
 "Brouillard Eclaircies Brouillard",
-"Brouillard Eclaircies Très nuageux",
-"Brouillard Ensoleillé Très nuageux",
+"Brouillard Eclaircies TrÃ¨s nuageux",
+"Brouillard EnsoleillÃ© TrÃ¨s nuageux",
 "Brouillard Pas d'obs Eclaircies",
-"Brouillard Pas d'obs Ensoleillé",
-"Brouillard Très nuageux Eclaircies",
-"Brouillard Très nuageux Ensoleillé",
+"Brouillard Pas d'obs EnsoleillÃ©",
+"Brouillard TrÃ¨s nuageux Eclaircies",
+"Brouillard TrÃ¨s nuageux EnsoleillÃ©",
 "Eclaircies Brouillard Brouillard",
-"Eclaircies Brouillard Ensoleillé",
-"Eclaircies Pluie faible ou averses Très nuageux",
+"Eclaircies Brouillard EnsoleillÃ©",
+"Eclaircies Pluie faible ou averses TrÃ¨s nuageux",
 "Eclaircies Eclaircies Risque d'orages",
-"Eclaircies Eclaircies Très nuageux",
-"Eclaircies Ensoleillé Très nuageux",
-"Eclaircies Ensoleillé Très nuageux",
+"Eclaircies Eclaircies TrÃ¨s nuageux",
+"Eclaircies EnsoleillÃ© TrÃ¨s nuageux",
+"Eclaircies EnsoleillÃ© TrÃ¨s nuageux",
 "Eclaircies Pas d'obs Risque d'orages",
-"Eclaircies Pas d'obs Très nuageux",
+"Eclaircies Pas d'obs TrÃ¨s nuageux",
 "Eclaircies Risque d'orages Eclaircies",
-"Eclaircies Risque d'orages Ensoleillé",
+"Eclaircies Risque d'orages EnsoleillÃ©",
 "Eclaircies Risque d'orages Pas d'obs",
-"Eclaircies Risque d'orages Très nuageux",
-"Eclaircies Très nuageux Eclaircies",
-"Eclaircies Très nuageux Ensoleillé",
-"Eclaircies Très nuageux Ensoleillé",
-"Eclaircies Très nuageux Pas d'obs",
-"Eclaircies Très nuageux Risque d'orages",
-"Eclaircies Très nuageux Très nuageux",
-"Ensoleillé Eclaircies Risque d'orages",
-"Ensoleillé Eclaircies Très nuageux",
-"Ensoleillé Ensoleillé Risque d'orages",
-"Ensoleillé Ensoleillé Très nuageux",
-"Ensoleillé Pas d'obs Très nuageux",
-"Ensoleillé Très nuageux Eclaircies",
-"Ensoleillé Très nuageux Ensoleillé",
-"Ensoleillé Très nuageux Pas d'obs",
-"Ensoleillé Très nuageux Très nuageux",
-"Pas d'obs Eclaircies Très nuageux",
-"Pas d'obs Ensoleillé Très nuageux",
-"Pas d'obs Très nuageux Eclaircies",
-"Pas d'obs Très nuageux Ensoleillé",
+"Eclaircies Risque d'orages TrÃ¨s nuageux",
+"Eclaircies TrÃ¨s nuageux Eclaircies",
+"Eclaircies TrÃ¨s nuageux EnsoleillÃ©",
+"Eclaircies TrÃ¨s nuageux EnsoleillÃ©",
+"Eclaircies TrÃ¨s nuageux Pas d'obs",
+"Eclaircies TrÃ¨s nuageux Risque d'orages",
+"Eclaircies TrÃ¨s nuageux TrÃ¨s nuageux",
+"EnsoleillÃ© Eclaircies Risque d'orages",
+"EnsoleillÃ© Eclaircies TrÃ¨s nuageux",
+"EnsoleillÃ© EnsoleillÃ© Risque d'orages",
+"EnsoleillÃ© EnsoleillÃ© TrÃ¨s nuageux",
+"EnsoleillÃ© Pas d'obs TrÃ¨s nuageux",
+"EnsoleillÃ© TrÃ¨s nuageux Eclaircies",
+"EnsoleillÃ© TrÃ¨s nuageux EnsoleillÃ©",
+"EnsoleillÃ© TrÃ¨s nuageux Pas d'obs",
+"EnsoleillÃ© TrÃ¨s nuageux TrÃ¨s nuageux",
+"Pas d'obs Eclaircies TrÃ¨s nuageux",
+"Pas d'obs EnsoleillÃ© TrÃ¨s nuageux",
+"Pas d'obs TrÃ¨s nuageux Eclaircies",
+"Pas d'obs TrÃ¨s nuageux EnsoleillÃ©",
 "Risque d'orages Eclaircies Eclaircies",
-"Risque d'orages Eclaircies Très nuageux",
+"Risque d'orages Eclaircies TrÃ¨s nuageux",
 "Risque d'orages Pas d'obs Eclaircies",
-"Risque d'orages Très nuageux Eclaircies",
-"Très nuageux Eclaircies Eclaircies",
-"Très nuageux Eclaircies Ensoleillé",
-"Très nuageux Eclaircies Pas d'obs",
-"Très nuageux Eclaircies Risque d'orages",
-"Très nuageux Eclaircies Très nuageux",
-"Très nuageux Ensoleillé Eclaircies",
-"Très nuageux Ensoleillé Ensoleillé",
-"Très nuageux Ensoleillé Pas d'obs",
-"Très nuageux Ensoleillé Très nuageux",
-"Très nuageux Pas d'obs Ensoleillé",
-"Très nuageux Très nuageux Eclaircies",
-"Très nuageux Très nuageux Ensoleillé",
-"Très nuageux Pas d'obs Eclaircies")] <- "Couvert - Soleil"
+"Risque d'orages TrÃ¨s nuageux Eclaircies",
+"TrÃ¨s nuageux Eclaircies Eclaircies",
+"TrÃ¨s nuageux Eclaircies EnsoleillÃ©",
+"TrÃ¨s nuageux Eclaircies Pas d'obs",
+"TrÃ¨s nuageux Eclaircies Risque d'orages",
+"TrÃ¨s nuageux Eclaircies TrÃ¨s nuageux",
+"TrÃ¨s nuageux EnsoleillÃ© Eclaircies",
+"TrÃ¨s nuageux EnsoleillÃ© EnsoleillÃ©",
+"TrÃ¨s nuageux EnsoleillÃ© Pas d'obs",
+"TrÃ¨s nuageux EnsoleillÃ© TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pas d'obs EnsoleillÃ©",
+"TrÃ¨s nuageux TrÃ¨s nuageux Eclaircies",
+"TrÃ¨s nuageux TrÃ¨s nuageux EnsoleillÃ©",
+"TrÃ¨s nuageux Pas d'obs Eclaircies")] <- "Couvert - Soleil"
 temp$descr_generale[temp$jour %in% c("Brouillard Pluie faible ou averses Pluie faible ou averses",
 "Brouillard Pluie faible ou averses Pas d'obs",
-"Brouillard Pluie faible ou averses Très nuageux",
+"Brouillard Pluie faible ou averses TrÃ¨s nuageux",
 "Brouillard Pas d'obs Pluie faible ou averses",
-"Brouillard Très nuageux Pluie faible ou averses",
+"Brouillard TrÃ¨s nuageux Pluie faible ou averses",
 "Pluie faible ou averses Brouillard Brouillard",
 "Pluie faible ou averses Brouillard Pas d'obs",
-"Pluie faible ou averses Brouillard Très nuageux",
+"Pluie faible ou averses Brouillard TrÃ¨s nuageux",
 "Pluie faible ou averses Brouillard Pas d'obs",
-"Pluie faible ou averses Pluie faible ou averses Très nuageux",
-"Pluie faible ou averses Pas d'obs Très nuageux",
-"Pluie faible ou averses Pluie faible ou averses Très nuageux",
-"Pluie faible ou averses Très nuageux Pluie faible ou averses",
-"Pluie faible ou averses Très nuageux Pas d'obs",
-"Pluie faible ou averses Très nuageux Pluies",
-"Pluie faible ou averses Très nuageux Pluie faible ou averses",
-"Pluie faible ou averses Très nuageux Risque d'orages",
-"Neige Pluie faible ou averses Très nuageux",
+"Pluie faible ou averses Pluie faible ou averses TrÃ¨s nuageux",
+"Pluie faible ou averses Pas d'obs TrÃ¨s nuageux",
+"Pluie faible ou averses Pluie faible ou averses TrÃ¨s nuageux",
+"Pluie faible ou averses TrÃ¨s nuageux Pluie faible ou averses",
+"Pluie faible ou averses TrÃ¨s nuageux Pas d'obs",
+"Pluie faible ou averses TrÃ¨s nuageux Pluies",
+"Pluie faible ou averses TrÃ¨s nuageux Pluie faible ou averses",
+"Pluie faible ou averses TrÃ¨s nuageux Risque d'orages",
+"Neige Pluie faible ou averses TrÃ¨s nuageux",
 "Pas d'obs Pluie faible ou averses Pluie faible ou averses",
 "Pas d'obs Pluie faible ou averses Pluie faible ou averses",
-"Pas d'obs Pluie faible ou averses Très nuageux",
+"Pas d'obs Pluie faible ou averses TrÃ¨s nuageux",
 "Pas d'obs Pluie faible ou averses Pluie faible ou averses",
-"Pas d'obs Pluie faible ou averses Très nuageux",
-"Pas d'obs Très nuageux Pluie faible ou averses",
-"Pas d'obs Très nuageux Pluie faible ou averses",
+"Pas d'obs Pluie faible ou averses TrÃ¨s nuageux",
+"Pas d'obs TrÃ¨s nuageux Pluie faible ou averses",
+"Pas d'obs TrÃ¨s nuageux Pluie faible ou averses",
 "Pluie faible ou averses Pluie faible ou averses Pas d'obs",
-"Pluie faible ou averses Pluie faible ou averses Très nuageux",
-"Très nuageux Pluie faible ou averses Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Pas d'obs",
-"Très nuageux Pluie faible ou averses Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Très nuageux",
-"Très nuageux Pas d'obs Pluie faible ou averses",
+"Pluie faible ou averses Pluie faible ou averses TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pluie faible ou averses Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses Pas d'obs",
+"TrÃ¨s nuageux Pluie faible ou averses Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses TrÃ¨s nuageux",
+"TrÃ¨s nuageux Pas d'obs Pluie faible ou averses",
 "Pas d'obs Pluie faible ou averses Pas d'obs",
 "Pas d'obs Pas d'obs Pluie faible ou averses",
-"Très nuageux Pas d'obs Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Pas d'obs",
-"Très nuageux Pluie faible ou averses Pluie faible ou averses",
-"Très nuageux Risque d'orages Pluie faible ou averses",
+"TrÃ¨s nuageux Pas d'obs Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses Pas d'obs",
+"TrÃ¨s nuageux Pluie faible ou averses Pluie faible ou averses",
+"TrÃ¨s nuageux Risque d'orages Pluie faible ou averses",
 "Pas d'obs Pluie faible ou averses Pas d'obs",
-"Très nuageux Risque d'orages Pluie faible ou averses",
-"Très nuageux Très nuageux Pluie faible ou averses",
+"TrÃ¨s nuageux Risque d'orages Pluie faible ou averses",
+"TrÃ¨s nuageux TrÃ¨s nuageux Pluie faible ou averses",
 "Pluie faible ou averses Pas d'obs Pas d'obs",
-"Très nuageux Très nuageux Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Très nuageux")] <- "Pluie légères"
+"TrÃ¨s nuageux TrÃ¨s nuageux Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses TrÃ¨s nuageux")] <- "Pluie lÃ©gÃ¨res"
 temp$descr_generale[temp$jour %in% c("Brouillard Eclaircies Eclaircies",
-"Brouillard Eclaircies Ensoleillé",
+"Brouillard Eclaircies EnsoleillÃ©",
 "Brouillard Eclaircies Pas d'obs",
-"Brouillard Ensoleillé Eclaircies",
-"Brouillard Ensoleillé Ensoleillé",
-"Brouillard Ensoleillé Pas d'obs",
+"Brouillard EnsoleillÃ© Eclaircies",
+"Brouillard EnsoleillÃ© EnsoleillÃ©",
+"Brouillard EnsoleillÃ© Pas d'obs",
 "Eclaircies Eclaircies Eclaircies",
-"Eclaircies Eclaircies Ensoleillé",
+"Eclaircies Eclaircies EnsoleillÃ©",
 "Eclaircies Eclaircies Pas d'obs",
-"Eclaircies Ensoleillé Eclaircies",
-"Eclaircies Ensoleillé Ensoleillé",
-"Eclaircies Ensoleillé Pas d'obs",
+"Eclaircies EnsoleillÃ© Eclaircies",
+"Eclaircies EnsoleillÃ© EnsoleillÃ©",
+"Eclaircies EnsoleillÃ© Pas d'obs",
 "Eclaircies Pas d'obs Eclaircies",
-"Eclaircies Pas d'obs Ensoleillé",
-"Ensoleillé Eclaircies Eclaircies",
-"Ensoleillé Eclaircies Ensoleillé",
-"Ensoleillé Eclaircies Pas d'obs",
-"Ensoleillé Ensoleillé Eclaircies",
-"Ensoleillé Ensoleillé Ensoleillé",
-"Ensoleillé Pas d'obs Pas d'obs",
-"Ensoleillé Ensoleillé Pas d'obs",
-"Ensoleillé Pas d'obs Eclaircies",
-"Ensoleillé Pas d'obs Ensoleillé",
+"Eclaircies Pas d'obs EnsoleillÃ©",
+"EnsoleillÃ© Eclaircies Eclaircies",
+"EnsoleillÃ© Eclaircies EnsoleillÃ©",
+"EnsoleillÃ© Eclaircies Pas d'obs",
+"EnsoleillÃ© EnsoleillÃ© Eclaircies",
+"EnsoleillÃ© EnsoleillÃ© EnsoleillÃ©",
+"EnsoleillÃ© Pas d'obs Pas d'obs",
+"EnsoleillÃ© EnsoleillÃ© Pas d'obs",
+"EnsoleillÃ© Pas d'obs Eclaircies",
+"EnsoleillÃ© Pas d'obs EnsoleillÃ©",
 "Pas d'obs Eclaircies Eclaircies",
-"Pas d'obs Eclaircies Ensoleillé",
-"Pas d'obs Ensoleillé Eclaircies",
-"Pas d'obs Ensoleillé Ensoleillé",
-"Pas d'obs Pas d'obs Ensoleillé",
-"Pas d'obs Ensoleillé Pas d'obs",
-"Pluie faible ou averses Pas d'obs Très nuageux",
+"Pas d'obs Eclaircies EnsoleillÃ©",
+"Pas d'obs EnsoleillÃ© Eclaircies",
+"Pas d'obs EnsoleillÃ© EnsoleillÃ©",
+"Pas d'obs Pas d'obs EnsoleillÃ©",
+"Pas d'obs EnsoleillÃ© Pas d'obs",
+"Pluie faible ou averses Pas d'obs TrÃ¨s nuageux",
 "Pluie faible ou averses Pluie faible ou averses Pluie faible ou averses",
 "Pas d'obs Eclaircies Pas d'obs",
 "Pas d'obs Pas d'obs Eclaircies",
 "Eclaircies Pas d'obs Pas d'obs",
-"Pluie faible ou averses Très nuageux Pluie faible ou averses",
-"Pluie faible ou averses Très nuageux Pluie faible ou averses",
-"Pluie faible ou averses Très nuageux Très nuageux")] <- "Soleil"
+"Pluie faible ou averses TrÃ¨s nuageux Pluie faible ou averses",
+"Pluie faible ou averses TrÃ¨s nuageux Pluie faible ou averses",
+"Pluie faible ou averses TrÃ¨s nuageux TrÃ¨s nuageux")] <- "Soleil"
 temp$descr_generale[temp$jour %in% c("Pas d'obs Pas d'obs Pas d'obs")] <- "Pas d'obs"
 temp$descr_generale[temp$jour %in% c("Pluie faible ou averses Brouillard Eclaircies",
 "Pluie faible ou averses Eclaircies Eclaircies",
-"Pluie faible ou averses Eclaircies Ensoleillé ",
+"Pluie faible ou averses Eclaircies EnsoleillÃ© ",
 "Pluie faible ou averses Eclaircies Pas d'obs",
-"Pluie faible ou averses Eclaircies Très nuageux",
-"Pluie faible ou averses Ensoleillé Ensoleillé",
-"Pluie faible ou averses Ensoleillé Pas d'obs",
+"Pluie faible ou averses Eclaircies TrÃ¨s nuageux",
+"Pluie faible ou averses EnsoleillÃ© EnsoleillÃ©",
+"Pluie faible ou averses EnsoleillÃ© Pas d'obs",
 "Pluie faible ou averses Pas d'obs Eclaircies",
 "Pluie faible ou averses Pluie faible ou averses Eclaircies",
-"Pluie faible ou averses Très nuageux Eclaircies",
-"Pluie faible ou averses Très nuageux Ensoleillé",
+"Pluie faible ou averses TrÃ¨s nuageux Eclaircies",
+"Pluie faible ou averses TrÃ¨s nuageux EnsoleillÃ©",
 "Eclaircies Pluie faible ou averses Eclaircies",
-"Eclaircies Pluie faible ou averses Ensoleillé",
+"Eclaircies Pluie faible ou averses EnsoleillÃ©",
 "Eclaircies Pluie faible ou averses Pas d'obs",
 "Eclaircies Eclaircies Pluie faible ou averses",
 "Eclaircies Eclaircies Neige",
 "Eclaircies Eclaircies Pluie faible ou averses",
-"Eclaircies Neige Très nuageux",
+"Eclaircies Neige TrÃ¨s nuageux",
 "Eclaircies Pas d'obs Pluie faible ou averses",
 "Eclaircies Pluie faible ou averses Eclaircies",
 "Eclaircies Pluie faible ou averses Pas d'obs",
 "Eclaircies Pluie faible ou averses Pluie faible ou averses",
-"Eclaircies Pluie faible ou averses Très nuageux",
+"Eclaircies Pluie faible ou averses TrÃ¨s nuageux",
 "Eclaircies Risque d'orages Pluie faible ou averses",
-"Eclaircies Très nuageux Pluie faible ou averses",
-"Eclaircies Très nuageux Neige",
-"Eclaircies Très nuageux Pluie faible ou averses",
-"Ensoleillé Eclaircies Pluie faible ou averses",
-"Ensoleillé Ensoleillé Neige",
-"Ensoleillé Très nuageux Pluie faible ou averses",
+"Eclaircies TrÃ¨s nuageux Pluie faible ou averses",
+"Eclaircies TrÃ¨s nuageux Neige",
+"Eclaircies TrÃ¨s nuageux Pluie faible ou averses",
+"EnsoleillÃ© Eclaircies Pluie faible ou averses",
+"EnsoleillÃ© EnsoleillÃ© Neige",
+"EnsoleillÃ© TrÃ¨s nuageux Pluie faible ou averses",
 "Neige Eclaircies Eclaircies",
-"Neige Eclaircies Très nuageux",
-"Neige Ensoleillé Ensoleillé",
-"Neige Ensoleillé Pas d'obs",
+"Neige Eclaircies TrÃ¨s nuageux",
+"Neige EnsoleillÃ© EnsoleillÃ©",
+"Neige EnsoleillÃ© Pas d'obs",
 "Pas d'obs Pluie faible ou averses Eclaircies",
 "Pas d'obs Eclaircies Pluie faible ou averses",
 "Pas d'obs Eclaircies Pluie faible ou averses",
-"Pas d'obs Ensoleillé Pluie faible ou averses",
+"Pas d'obs EnsoleillÃ© Pluie faible ou averses",
 "Pas d'obs Pluie faible ou averses Eclaircies",
 "Pluie faible ou averses Eclaircies Eclaircies",
 "Pluie faible ou averses Eclaircies Pas d'obs",
-"Pluie faible ou averses Eclaircies Très nuageux",
-"Pluie faible ou averses Très nuageux Eclaircies",
-"Très nuageux Pluie faible ou averses Eclaircies",
-"Très nuageux Eclaircies Pluie faible ou averses",
-"Très nuageux Eclaircies Pluie faible ou averses",
-"Très nuageux Ensoleillé Pluie faible ou averses",
-"Très nuageux Pluie faible ou averses Eclaircies")] <- "Pluies légères - Soleil"
-temp$descr_generale[temp$jour %in% c("Eclaircies Très nuageux Pluies",
+"Pluie faible ou averses Eclaircies TrÃ¨s nuageux",
+"Pluie faible ou averses TrÃ¨s nuageux Eclaircies",
+"TrÃ¨s nuageux Pluie faible ou averses Eclaircies",
+"TrÃ¨s nuageux Eclaircies Pluie faible ou averses",
+"TrÃ¨s nuageux Eclaircies Pluie faible ou averses",
+"TrÃ¨s nuageux EnsoleillÃ© Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses Eclaircies")] <- "Pluies lÃ©gÃ¨res - Soleil"
+temp$descr_generale[temp$jour %in% c("Eclaircies TrÃ¨s nuageux Pluies",
 "Pluie faible ou averses Pluie faible ou averses Eclaircies",
 "Eclaircies Pas d'obs Pluies",
 "Eclaircies Pluies Eclaircies",
-"Eclaircies Pluies Ensoleillé",
+"Eclaircies Pluies EnsoleillÃ©",
 "Pluie faible ou averses Eclaircies Pluie faible ou averses",
 "Eclaircies Pluies Pas d'obs",
 "Eclaircies Pluies Pluies",
-"Eclaircies Ensoleillé Pluies",
+"Eclaircies EnsoleillÃ© Pluies",
 "Eclaircies Eclaircies Pluies",
-"Eclaircies Pluies Très nuageux",
+"Eclaircies Pluies TrÃ¨s nuageux",
 "Eclaircies Pluie faible ou averses Pluie faible ou averses",
 "Eclaircies Pluies Pluie faible ou averses",
 "Pluie faible ou averses Eclaircies Pluies",
 "Pluie faible ou averses Pluies Eclaircies",
-"Ensoleillé Eclaircies Pluies",
+"EnsoleillÃ© Eclaircies Pluies",
 "Pas d'obs Eclaircies Pluies",
 "Pluies Eclaircies Eclaircies",
 "Pluies Eclaircies Pluie faible ou averses",
 "Pluies Pas d'obs Eclaircies",
 "Pluies Pluie faible ou averses Eclaircies",
-"Pluies Très nuageux Eclaircies",
-"Très nuageux Eclaircies Pluies",
-"Très nuageux Pluies Eclaircies",
+"Pluies TrÃ¨s nuageux Eclaircies",
+"TrÃ¨s nuageux Eclaircies Pluies",
+"TrÃ¨s nuageux Pluies Eclaircies",
 "Pas d'obs Pluies Eclaircies")] <- "Pluie - Soleil"
 temp$descr_generale[temp$jour %in% c("Pluie faible ou averses Pluie faible ou averses Pluie faible ou averses",
 "Pluie faible ou averses Pluie faible ou averses Neige",
@@ -474,7 +474,7 @@ temp$descr_generale[temp$jour %in% c("Pluie faible ou averses Pluie faible ou av
 "Pluie faible ou averses Pas d'obs Pluie faible ou averses",
 "Pluie faible ou averses Pluies Pluie faible ou averses",
 "Pluie faible ou averses Pluies Pas d'obs",
-"Pluie faible ou averses Pluies Très nuageux",
+"Pluie faible ou averses Pluies TrÃ¨s nuageux",
 "Pluie faible ou averses Pluie faible ou averses Pluie faible ou averses",
 "Pluie faible ou averses Pluie faible ou averses Pas d'obs",
 "Pluie faible ou averses Pluie faible ou averses Pluies",
@@ -482,23 +482,23 @@ temp$descr_generale[temp$jour %in% c("Pluie faible ou averses Pluie faible ou av
 "Pas d'obs Pluie faible ou averses Pluies",
 "Pluies Pluie faible ou averses Pas d'obs",
 "Pluies Pluie faible ou averses Pluie faible ou averses",
-"Pluies Pluies Très nuageux",
+"Pluies Pluies TrÃ¨s nuageux",
 "Pluie faible ou averses Pas d'obs Pluies",
-"Pluie faible ou averses Pluies Très nuageux",
+"Pluie faible ou averses Pluies TrÃ¨s nuageux",
 "Risque d'orages Pluies Pluie faible ou averses",
 "Pluies Pas d'obs Pas d'obs",
-"Très nuageux Pluie faible ou averses Pluies",
-"Très nuageux Pluies Pluie faible ou averses",
+"TrÃ¨s nuageux Pluie faible ou averses Pluies",
+"TrÃ¨s nuageux Pluies Pluie faible ou averses",
 "Pas d'obs Pluies Pas d'obs")] <- "Pluie"
-temp$descr_generale[temp$jour %in% c("Pluies Très nuageux Pas d'obs",
-"Pluies Très nuageux Très nuageux",
-"Pas d'obs Très nuageux Pluies",
-"Très nuageux Pas d'obs Pluies",
-"Très nuageux Pluies Pas d'obs",
-"Très nuageux Pluies Risque d'orages",
-"Très nuageux Pluies Très nuageux",
-"Très nuageux Très nuageux Pluies",
-"Pas d'obs Pluies Très nuageux")] <- "Pluie - Couvert"
+temp$descr_generale[temp$jour %in% c("Pluies TrÃ¨s nuageux Pas d'obs",
+"Pluies TrÃ¨s nuageux TrÃ¨s nuageux",
+"Pas d'obs TrÃ¨s nuageux Pluies",
+"TrÃ¨s nuageux Pas d'obs Pluies",
+"TrÃ¨s nuageux Pluies Pas d'obs",
+"TrÃ¨s nuageux Pluies Risque d'orages",
+"TrÃ¨s nuageux Pluies TrÃ¨s nuageux",
+"TrÃ¨s nuageux TrÃ¨s nuageux Pluies",
+"Pas d'obs Pluies TrÃ¨s nuageux")] <- "Pluie - Couvert"
 
 meteo$jour <- paste(meteo$Desc_10h, meteo$Desc_13h, meteo$Desc_16h)
 meteo <- left_join(meteo, temp, by = "jour")
