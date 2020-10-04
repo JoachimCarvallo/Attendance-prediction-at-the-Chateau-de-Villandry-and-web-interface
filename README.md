@@ -1,2 +1,2 @@
-# Prediction of attendance at the Chateau de Villandry and web interface
+# Attendance prediction at the Chateau de Villandry and web interface
  The objective of this project is to produce a model for predicting the number of visitors to Château de Villandry for a given day that is as efficient as possible. This model must be accompanied by a web interface in order to be able to access its predictions easily. The explanatory variables will be weather data obtained by the Météo France website, as well as all the relevant information on the day in question, such as the season, the day of the week, holiday periods, public holidays, etc.
