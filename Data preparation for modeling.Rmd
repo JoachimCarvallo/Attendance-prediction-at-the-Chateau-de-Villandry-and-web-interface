@@ -1,20 +1,27 @@
 ---
 title: "Data preparation for modeling"
-output: html_document
+author : Joachim Carvallo
+output: htmoutput:
+  pdf_document: default
+  html_document: defaultl_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+opts_chunk$set(echo = TRUE)
+opts_chunk$set(warning = FALSE)
+opts_chunk$set(message = FALSE)
 ```
 
-```{r}
+```{r results = "hide}
 library('dplyr') # Library for dataframes manipulations
 library('ggplot2') # Library for data visualization
 library('lubridate') # Library for date management
-library("caret") # Library for data splitting/pre-processing/feature selection/model tuning
-library("scales") # Library for
-```
+library("caret") # Library for data splitting
+library("scales") # Library for better date display in plots 
 
+# (this is how i used those libraries but it does not describe everything they can do)
+```
 
 # Creation of the database
 
@@ -185,7 +192,6 @@ for (i in 4:(nrow(visiteurs)-3)) {
     if (visiteurs$Jour[i] %in% c(2,4) & visiteurs$est_jour_ferie[i]==TRUE) {visiteurs$wkd_4j[i] <- TRUE}
 }
 
-
 # Is it a "Mille feux" day ? (An event in Villandry which greatly increases attendance)
 # It take place every first weekend of july since 2006 and every first weekend of august since 2018
 visiteurs$mille_feux <- FALSE
@@ -217,7 +223,6 @@ visiteurs$ecart_prec_5 <- c(0,0,0,0,0,visiteurs$ecart_sais[1:10397])
 visiteurs$ecart_prec_6 <- c(0,0,0,0,0,0,visiteurs$ecart_sais[1:10396])
 visiteurs$ecart_prec_7 <- c(0,0,0,0,0,0,0,visiteurs$ecart_sais[1:10395])
 ```
-
 
 ## Last modifications :
 ```{r}
