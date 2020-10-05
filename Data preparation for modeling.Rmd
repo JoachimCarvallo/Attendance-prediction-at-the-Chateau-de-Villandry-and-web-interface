@@ -1,0 +1,248 @@
+---
+title: "Data preparation for modeling"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library('dplyr') # Library for dataframes manipulations
+library('ggplot2') # Library for data visualization
+library('lubridate') # Library for date management
+library("caret") # Library for data splitting/pre-processing/feature selection/model tuning
+library("scales") # Library for
+```
+
+
+# Creation of the database
+
+## Weather data
+```{r}
+load("Donnees meteo Tours_Finales.Rda")
+meteo$Desc_10h <- NULL
+meteo$Desc_16h <- NULL
+```
+
+## Visitor data
+```{r}
+# Loading visitor data
+visiteurs <- read.delim("Nombre de visiteurs par jour Villandry.txt", header = F, col.names="DATE")
+visiteurs$DATE <- as.factor(visiteurs$DATE)
+
+# Separation of the two variables
+visiteurs$Nb_visiteurs <- paste(substr(visiteurs$DATE, 21, 21), substr(visiteurs$DATE, 23, 26), sep ="")
+visiteurs$DATE <- substr(visiteurs$DATE, 1, 8)
+visiteurs$DATE <- as.Date(visiteurs$DATE, "%d/%m/%y")
+visiteurs$Nb_visiteurs <- as.numeric(visiteurs$Nb_visiteurs)
+
+# Closing date
+date_limite <- "2019-07-02"
+visiteurs <- visiteurs[visiteurs$DATE<date_limite,]
+
+# Correction of the data by tickets solded to the tourist office
+place_OT <- read.delim("Places office du tourisme.txt", header = F, col.names="DATE") 
+place_OT$Nb_places <- paste(substr(place_OT$DATE, 21, 21), substr(place_OT$DATE, 23, 26), sep ="")
+place_OT$DATE <- substr(place_OT$DATE, 1, 8)
+place_OT$DATE <- as.Date(place_OT$DATE, "%d/%m/%y")
+place_OT$Nb_places <- as.numeric(place_OT$Nb_places)
+place_OT <- place_OT[place_OT$DATE<date_limite,]
+place_OT$Nb_places[is.na(place_OT$Nb_places)] <- 0
+
+visiteurs$Nb_visiteurs[visiteurs$DATE >= "2010-01-01"] <- visiteurs$Nb_visiteurs[visiteurs$DATE >= "2010-01-01"] - place_OT$Nb_places
+```
+
+## Public holiday
+```{r}
+joursferies <- read.csv(file = "jours-feries.csv", header = T, sep = ";")
+joursferies$nom_jour_ferie <- NULL
+joursferies$date <- as.Date(joursferies$date, "%d/%m/%Y")
+joursferies$jour_ferie <- FALSE
+joursferies$jour_ferie[joursferies$est_jour_ferie == "True"] <- TRUE
+joursferies$est_jour_ferie <- NULL
+names(joursferies) <- c("DATE", "est_jour_ferie")
+```
+
+## Holidays
+```{r}
+vacances <- read.csv(file = "vacances.csv", header = T, sep = ";")
+vacances$nom_vacances <- NULL
+vacances$date <- as.Date(vacances$date, "%d/%m/%Y")
+vacances$vacances_zone_a <- as.numeric(vacances$vacances_zone_a) -1
+vacances$vacances_zone_b <- as.numeric(vacances$vacances_zone_b) -1
+vacances$vacances_zone_c <- as.numeric(vacances$vacances_zone_c) -1
+vacances$vacances_zone_a <- vacances$vacances_zone_a + vacances$vacances_zone_b + vacances$vacances_zone_c
+vacances$vacances_zone_b <- NULL
+vacances$vacances_zone_c <- NULL
+names(vacances) <- c("DATE", "vacances")
+```
+
+## Fusion of the databases 
+```{r}
+visiteurs <- left_join(visiteurs, meteo, by = "DATE")
+visiteurs <- left_join(visiteurs, joursferies, by = "DATE")
+visiteurs <- left_join(visiteurs, vacances, by = "DATE")
+
+rm(meteo, joursferies, vacances, place_OT, date_limite)
+```
+
+
+# Data processing 
+
+## Missing values
+```{r}
+# The NA's in the number of visitors are simply days when the castle is closed (meaning 0 visitors) :
+visiteurs$Nb_visiteurs[is.na(visiteurs$Nb_visiteurs)] <- 0
+
+# Public holidays on weekends are not relevant :
+visiteurs$est_jour_ferie[visiteurs$est_jour_ferie == TRUE & visiteurs$Jour %in% c(6,7)] <- FALSE
+
+# We remove February 29 every leap year to make it easier (it's not an important day): 
+visiteurs <- visiteurs[!(month(visiteurs$DATE) == 02 & day(visiteurs$DATE) == 29 & year(visiteurs$DATE) %in% c(1992,1996,2000,2004,2008,2012,2016)),]
+```
+
+## Variables Month, Day of the week and Year
+```{r}
+visiteurs$Mois <- as.factor(month(visiteurs$DATE))
+visiteurs$Jour <- wday(visiteurs$DATE) - 1
+visiteurs$Jour[visiteurs$Jour == 0] <- 7
+visiteurs$Jour <- as.factor(visiteurs$Jour)
+visiteurs$annee <- as.numeric(year(visiteurs$DATE))
+```
+
+## Work on the variable to be explained
+
+The aim here is to obtain a relevant curve of the normal seasonnality in Villandry. We want to get a curve as smooth as possible, that represent, for a given day of the year, the normal frequentation (thus without knowing if it's a weekend, if there is a special event, if it's rainy, etc). Then, our variable to be explained will be the difference to the normal seasonality for each day.
+
+```{r}
+# Moving median over 7 days : 
+# (moving average is too mutch dependant on the spikes of special days, it does not give a smooth curve at all)
+visiteurs$mediane_gliss <- c(visiteurs$Nb_visiteurs[1:3], apply(embed(visiteurs$Nb_visiteurs, 7), 1, median), visiteurs$Nb_visiteurs[10400:10402])
+
+# Isolation of the moving median over 27 years :
+mediane_gliss <- visiteurs[visiteurs$annee %in% 1992:2018, c("DATE", "mediane_gliss")]
+
+# Suppression of an anomaly in the data (the castle had to close a few day in 2016 because of floodings) :
+mediane_gliss$mediane_gliss[mediane_gliss$DATE > "2016-05-30" & mediane_gliss$DATE < "2016-06-10"] <- c(1368.282, 1337.374, 1310.854, 1290.949, 1269.770, 1256.015, 1269.574, 1286.165, 1301.046, 1317.622)
+
+# Averaging the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27) :
+year(mediane_gliss$DATE) <- 2020
+saison <- mediane_gliss %>% group_by(DATE) %>% summarize(Nb_visiteurs = weighted.mean(x=mediane_gliss, w=1:27+1))
+
+# Apply a final smoothing to the curvewith a mobile average:
+saison$Nb_visiteurs_liss <- c(saison$Nb_visiteurs[1:2], apply(embed(saison$Nb_visiteurs, 5), 1, mean), saison$Nb_visiteurs[364:365])
+
+# Creation of the new variable 
+visiteurs$saison <- c(rep(saison$Nb_visiteurs_liss, 28), saison$Nb_visiteurs_liss[1:182])
+visiteurs$ecart_sais <- visiteurs$Nb_visiteurs - visiteurs$saison
+
+# Plot of the resulting seasonality (before and after the last smoothing) :
+ggplot(saison)+geom_line(aes(x = DATE, y = Nb_visiteurs_liss)) + theme_bw() + 
+    scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) 
+ggplot(saison)+geom_line(aes(x = DATE, y = Nb_visiteurs))+geom_line(aes(x = DATE, y = Nb_visiteurs_liss), col = "red") +
+    theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) 
+# Plot of the seasonality against the year 2018
+ggplot(visiteurs[visiteurs$annee == 2018,])+ geom_line(aes(x = DATE, y = Nb_visiteurs)) + 
+    geom_line(aes(x = DATE, y = saison), col = "red") + theme_bw() + 
+    scale_x_date(breaks = date_breaks("months"), labels = date_format("%b"))
+
+# Animated plot of the seasonality against a few years :
+library("gganimate")
+temp <- visiteurs
+year(temp$DATE) <- 2020
+p <- ggplot(temp[temp$annee %in% c(1991,1995,2000,2005,2010,2015:2018),])+ geom_line(aes(x = DATE, y = Nb_visiteurs)) + geom_line(aes(x = DATE, y = saison), col = "red") + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) + transition_states(annee, state_length = 3) + labs(x = "Annee: {closest_state}", y= "Nombre de visiteurs") + theme_bw(base_size = 23)
+
+anim_save(p, file = "Animation moyenne vs annees.gif", width = 1500, height = 750, duration = 45, fps = 15)
+
+rm(mediane_gliss, saison)
+
+```
+
+## New variables
+```{r}
+# 1) Is it a 3 day weekend ? 2) Is it the middle day of the 3 day weekend ?
+visiteurs$wkd_3j <- FALSE
+visiteurs$wkd_3j_milieu <- FALSE
+for (i in 3:(nrow(visiteurs)-2)) {
+    if (visiteurs$Jour[i] == 6 & visiteurs$est_jour_ferie[(i-1)]==TRUE) {visiteurs$wkd_3j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] == 6 & visiteurs$est_jour_ferie[(i+2)] == TRUE) {visiteurs$wkd_3j[i] <- TRUE}
+    if (visiteurs$Jour[i] == 7 & visiteurs$est_jour_ferie[(i-2)]==TRUE) {visiteurs$wkd_3j[i] <- TRUE}
+    if (visiteurs$Jour[i] == 7 & visiteurs$est_jour_ferie[(i+1)] == TRUE) {visiteurs$wkd_3j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] %in% c(1,5) & visiteurs$est_jour_ferie[i]==TRUE) {visiteurs$wkd_3j[i] <- TRUE}
+}
+
+# 1) Is it a 4 day weekend ? 2) Is it one of the middle days of the 4 day weekend ?
+visiteurs$wkd_4j <- FALSE
+visiteurs$wkd_4j_milieu <- FALSE
+for (i in 4:(nrow(visiteurs)-3)) {
+    if (visiteurs$Jour[i] == 6 & visiteurs$est_jour_ferie[(i-2)]==TRUE) {visiteurs$wkd_4j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] == 6 & visiteurs$est_jour_ferie[(i+3)] == TRUE) {visiteurs$wkd_4j[i] <- TRUE}
+    if (visiteurs$Jour[i] == 7 & visiteurs$est_jour_ferie[(i-3)]==TRUE) {visiteurs$wkd_4j[i] <- TRUE}
+    if (visiteurs$Jour[i] == 7 & visiteurs$est_jour_ferie[(i+2)] == TRUE) {visiteurs$wkd_4j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] == 5 & visiteurs$est_jour_ferie[(i-1)]==TRUE) {visiteurs$wkd_4j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] == 1 & visiteurs$est_jour_ferie[(i+1)]==TRUE) {visiteurs$wkd_4j_milieu[i] <- TRUE}
+    if (visiteurs$Jour[i] %in% c(2,4) & visiteurs$est_jour_ferie[i]==TRUE) {visiteurs$wkd_4j[i] <- TRUE}
+}
+
+
+# Is it a "Mille feux" day ? (An event in Villandry which greatly increases attendance)
+# It take place every first weekend of july since 2006 and every first weekend of august since 2018
+visiteurs$mille_feux <- FALSE
+visiteurs$mille_feux[visiteurs$Mois == "7" & day(visiteurs$DATE) < 8 & day(visiteurs$DATE) > 1 & visiteurs$annee>2005 & visiteurs$Jour %in% c("5", "6")] <- TRUE
+visiteurs$mille_feux[visiteurs$Mois=="7" & day(visiteurs$DATE)==1 & visiteurs$annee>2005 & visiteurs$Jour==5] <- TRUE
+visiteurs$mille_feux[visiteurs$Mois=="7" & day(visiteurs$DATE)==8 & visiteurs$annee>2005 & visiteurs$Jour==6] <- TRUE
+
+visiteurs$mille_feux[visiteurs$Mois == "8" & day(visiteurs$DATE) < 8 & day(visiteurs$DATE) > 1 & visiteurs$annee>2017 & visiteurs$Jour %in% c("5", "6")] <- TRUE
+visiteurs$mille_feux[visiteurs$Mois=="8" & day(visiteurs$DATE)==1 & visiteurs$DATE>"2017-12-31" & visiteurs$Jour==5] <- TRUE
+visiteurs$mille_feux[visiteurs$Mois=="8" & day(visiteurs$DATE)==8 & visiteurs$DATE>"2017-12-31" & visiteurs$Jour==6] <- TRUE
+
+# Is it one of the two major other event at Villandry ? (Heritage days and vegetable garden days)
+visiteurs$wkd_patr_potag <- FALSE
+visiteurs$wkd_patr_potag[visiteurs$Mois == "9" & day(visiteurs$DATE) < 22 & day(visiteurs$DATE) > 15 & visiteurs$Jour %in% c("6", "7")] <- TRUE
+visiteurs$wkd_patr_potag[visiteurs$Mois == "9" & day(visiteurs$DATE) == 15 & visiteurs$Jour == 6] <- TRUE
+visiteurs$wkd_patr_potag[visiteurs$Mois == "9" & day(visiteurs$DATE) == 22 & visiteurs$Jour == 7] <- TRUE
+
+visiteurs$wkd_patr_potag[visiteurs$annee > 2005 & visiteurs$Mois == "9" & day(visiteurs$DATE) > 25 & visiteurs$Jour %in% c("6", "7")] <- TRUE
+visiteurs$wkd_patr_potag[visiteurs$annee > 2005 & visiteurs$Mois == "9" & day(visiteurs$DATE) == 25 & visiteurs$Jour == 6] <- TRUE
+visiteurs$wkd_patr_potag[visiteurs$annee > 2005 & visiteurs$Mois == "10" & day(visiteurs$DATE) == 1 & visiteurs$Jour == 7] <- TRUE
+visiteurs$wkd_patr_potag[visiteurs$DATE %in% c("2005-09-10", "2005-09-11", "2004-09-04", "2004-09-05", "2003-09-06", "2003-09-07", "2002-09-07", "2002-09-08", "2001-09-08", "2001-09-09", "2000-09-09", "2000-09-10", "1999-09-25", "1999-09-26")] <- TRUE
+
+# Previous days performance : 
+visiteurs$ecart_prec_1 <- c(0,visiteurs$ecart_sais[1:10401])
+visiteurs$ecart_prec_2 <- c(0,0,visiteurs$ecart_sais[1:10400])
+visiteurs$ecart_prec_3 <- c(0,0,0,visiteurs$ecart_sais[1:10399])
+visiteurs$ecart_prec_4 <- c(0,0,0,0,visiteurs$ecart_sais[1:10398])
+visiteurs$ecart_prec_5 <- c(0,0,0,0,0,visiteurs$ecart_sais[1:10397])
+visiteurs$ecart_prec_6 <- c(0,0,0,0,0,0,visiteurs$ecart_sais[1:10396])
+visiteurs$ecart_prec_7 <- c(0,0,0,0,0,0,0,visiteurs$ecart_sais[1:10395])
+```
+
+
+## Last modifications :
+```{r}
+ # We will focus only on the periode between april and october (included) because the because for the rest of the year, the castle is often closed or receives very few visitors. The goal of the model is mostly to be used during the high season. 
+visiteurs <- visiteurs[visiteurs$Mois %in% 4:10,]
+visiteurs <- droplevels(visiteurs)
+
+# Removal of the anomaly of June 2016:
+visiteurs <- visiteurs[!( "2016-06-01" < visiteurs$DATE & visiteurs$DATE < "2016-06-8" ),]
+
+# No more needed variables :
+visiteurs$Nb_visiteurs <- NULL
+visiteurs$mediane_gliss <- NULL
+```
+
+
+# Split between test set et dev set:
+```{r}
+# We will use 2018 and 2019 as test set in order to better visualize the predictions of our models
+visiteurs_dev <- visiteurs[visiteurs$annee %in% c(2018, 2019),]
+visiteurs  <- visiteurs[!(visiteurs$annee %in% c(2018, 2019)),]
+
+visiteurs$annee <- NULL
+visiteurs_dev$annee <- NULL
+rm(i)
+
+save.image("Donnees pretes pour modelisation.Rdata")
+```
