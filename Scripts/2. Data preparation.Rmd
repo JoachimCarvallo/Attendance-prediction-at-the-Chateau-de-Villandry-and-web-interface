@@ -233,6 +233,10 @@ visiteurs <- droplevels(visiteurs)
 # Removal of the anomaly of June 2016:
 visiteurs <- visiteurs[!( "2016-06-01" < visiteurs$DATE & visiteurs$DATE < "2016-06-8" ),]
 
+# Save data for statistics
+rm(i, p, temp)
+save.image("Donnees pretes pour stats.Rdata")
+
 # No more needed variables :
 visiteurs$Nb_visiteurs <- NULL
 visiteurs$mediane_gliss <- NULL
