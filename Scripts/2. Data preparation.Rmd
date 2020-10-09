@@ -246,7 +246,7 @@ visiteurs$mediane_gliss <- NULL
 # Split between test set et dev set:
 ```{r}
 # We will use 2018 and 2019 as test set in order to better visualize the predictions of our models
-visiteurs_dev <- visiteurs[visiteurs$annee %in% c(2018, 2019),]
+visiteurs_test <- visiteurs[visiteurs$annee %in% c(2018, 2019),]
 visiteurs  <- visiteurs[!(visiteurs$annee %in% c(2018, 2019)),]
 
 visiteurs$annee <- NULL
