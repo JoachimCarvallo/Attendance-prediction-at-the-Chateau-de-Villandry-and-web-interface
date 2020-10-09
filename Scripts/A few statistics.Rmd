@@ -1,0 +1,224 @@
+---
+title: "A few statistics"
+author: "Joachim CARVALLO"
+date: "9 octobre 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading the database and library
+```{r}
+require('ggplot2')# Library for data visualization
+require('lubridate') # Library for date management
+require('gganimate')  # Library extending ggplot for animated plots
+library('dplyr') # Library for dataframes manipulations
+
+load("Donnees pretes pour stats.Rdata")
+```
+
+
+# Statistics on the number of visitors :
+```{r}
+# Plot of the number of visitors for 2016, 2017 and 2018
+ggplot(visiteurs[visiteurs$annee == "2018",]) + 
+  geom_line(aes(x=DATE, y=Nb_visiteurs), size = 1) + 
+  scale_x_date(date_breaks="months", date_labels="%b") + 
+  theme_bw() + labs(x = "Date", y = "Number of visitors", color = "Year")
+
+# Change the year in the variable date in order to plot years together
+visiteurs$annee <- as.factor(visiteurs$annee)
+year(visiteurs$DATE) <- 2020
+
+# Plot of the number of visitors for 2016, 2017 and 2018
+ggplot(visiteurs[visiteurs$annee %in% c("2016", "2017", "2018"),]) + 
+  geom_line(aes(x=DATE, y=Nb_visiteurs, color = annee), size = 1) + 
+  scale_x_date(date_breaks="months", date_labels="%b") + 
+  theme_bw() + labs(x = "Date", y = "Number of visitors", color = "Year")
+```
+
+```{r}
+# New variable : Number of cumulative visitors
+visiteurs$Nb_visiteurs_cumul_an <- 0
+for (j in levels(visiteurs$annee)){
+  visiteurs[visiteurs$annee == j,"Nb_visiteurs_cumul_an"][1] <- visiteurs[visiteurs$annee == j, "Nb_visiteurs"][1]
+  for (i in 2:nrow(visiteurs[visiteurs$annee == j,])){
+    visiteurs[visiteurs$annee == j, "Nb_visiteurs_cumul_an"][i] <- visiteurs[visiteurs$annee == j, "Nb_visiteurs"][i] + visiteurs[visiteurs$annee == j, "Nb_visiteurs_cumul_an"][(i-1)]
+  }
+}
+
+# Plot of the cumulative number of visitors for 2016, 2017 and 2018
+ggplot(visiteurs[visiteurs$annee %in% c("2016", "2017", "2018"),]) + 
+  geom_line(aes(x=DATE, y=Nb_visiteurs_cumul_an, color = annee), size = 1) + 
+  scale_x_date(date_breaks="months", date_labels="%b") + 
+  theme_bw() + labs(x = "Date", y = "Number of cumulative visitors", color = "Year")
+```
+
+
+# Covariables against number of visitors
+```{r}
+# Month :
+ggplot(visiteurs, aes(x=Mois, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Month", y = "Number of visitors")
+
+# Day of the week :
+ggplot(visiteurs, aes(x=Jour, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Day of the week", y = "Number of visitors")
+
+# Public holidays :
+ggplot(visiteurs, aes(x=est_jour_ferie, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Public holiday ?", y = "Number of visitors")
+ggplot(visiteurs, aes(x= Nb_visiteurs, fill = est_jour_ferie)) + geom_density(alpha=.5) + 
+  scale_fill_manual( values = c("grey","green")) + theme_bw() + 
+  labs(x = "Number of visitors", y = NULL, fill = "Public holiday ?")
+
+# Holidays :
+visiteurs$vacances <- as.factor(visiteurs$vacances)
+ggplot(visiteurs, aes(x=vacances, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Number of vacation zones", y = "Number of visitors")
+ggplot(visiteurs, aes(x= Nb_visiteurs, fill = vacances)) + geom_density(alpha=.5) + 
+  theme_bw() + labs(x = "Number of visitors", y = NULL, fill = "Number of vacation zones")
+
+# Maximum temperature :
+ggplot(visiteurs, aes(x=Temp.max, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Number of visitors")
+
+# Précipitations :
+ggplot(visiteurs, aes(x=Precipitation+1, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  scale_x_continuous(trans = 'log2') + geom_smooth() + theme_bw() + 
+  labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
+
+# Description of the weather at 1 pm :
+ggplot(visiteurs, aes(x=Desc_13h, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Number of visitors")
+
+# General description of the weather :
+ggplot(visiteurs, aes(x=descr_generale, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "General description of the weather", y = "Number of visitors")
+
+# Weather grade :
+ggplot(visiteurs, aes(x=note_temps, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Weather grade", y = "Number of visitors")
+
+#  Deviation from seasonality day-1 :
+ggplot(visiteurs, aes(x=ecart_prec_1, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-1", y = "Number of visitors")
+
+#  Deviation from seasonality day-2 :
+ggplot(visiteurs, aes(x=ecart_prec_2, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-2", y = "Number of visitors")
+
+#  Deviation from seasonality day-3 :
+ggplot(visiteurs, aes(x=ecart_prec_3, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-3", y = "Number of visitors")
+```
+
+
+# Covariables against deviation from seasonality
+
+Considering the deviation from seasonality is probably more relevant here than the number of visitors because most variables are highly correlated with seasonality (temperature, weather, holidays..), which has a huge impact on the number of visitors.
+
+```{r}
+# Month :
+ggplot(visiteurs, aes(x=Mois, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Month", y = "Deviation from seasonality of the number of visitors")
+
+# Day of the week :
+ggplot(visiteurs, aes(x=Jour, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Day of the week", y = "Deviation from seasonality of the number of visitors")
+
+# Public holidays :
+ggplot(visiteurs, aes(x=est_jour_ferie, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Public holiday ?", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x= ecart_sais, fill = est_jour_ferie)) + geom_density(alpha=.5) +
+  scale_fill_manual( values = c("grey","green")) + theme_bw() + 
+  labs(x = "Deviation from seasonality of the number of visitors", y = NULL, fill = "Public holiday ?")
+
+# Holidays :
+visiteurs$vacances <- as.factor(visiteurs$vacances)
+ggplot(visiteurs, aes(x=vacances, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Number of vacation zones", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x= ecart_sais, fill = vacances)) + geom_density(alpha=.5) + 
+  theme_bw() + labs(x = "Deviation from seasonality of the number of visitors", y = NULL, fill = "Number of vacation zones")
+
+# Maximum temperature :
+ggplot(visiteurs, aes(x=Temp.max, y= ecart_sais)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Deviation from seasonality of the number of visitors")
+
+# Précipitations :
+ggplot(visiteurs, aes(x=Precipitation+1, y= ecart_sais)) + geom_point(alpha=.1) +
+  scale_x_continuous(trans = 'log10') + geom_smooth() + theme_bw() + 
+  labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
+
+# Description of the weather at 1 pm :
+ggplot(visiteurs, aes(x=Desc_13h, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Deviation from seasonality of the number of visitors")
+
+# General description of the weather :
+ggplot(visiteurs, aes(x=descr_generale, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "General description of the weather", y = "Deviation from seasonality of the number of visitors")
+
+# Weather grade :
+ggplot(visiteurs, aes(x=note_temps, y= ecart_sais)) + geom_point(alpha=.1) + 
+  geom_smooth() + theme_bw() + labs(x = "Weather grade", y = "Deviation from seasonality of the number of visitors")
+```
+
+
+# Animations
+```{r}
+# Number of cumulative visitors for 2016, 2017 and 2018
+p <- ggplot(visiteurs[visiteurs$annee %in% c("2016", "2017", "2018"),], aes(x=DATE, y=Nb_visiteurs_cumul_an, color = annee)) +
+  geom_line(size = 0.9) + geom_text(aes(label = gsub(pattern = "20", replacement = "", x = annee)), size=12, hjust = 0) + 
+  scale_x_date(date_breaks="months", date_labels="%b") + 
+  theme_bw(base_size = 30) + labs(color="Year", y= "Number of cumulative visitors", x = "Date") +
+  theme(legend.position="top", plot.margin = margin(r=120, l=20, t=20, b=75)) + 
+  transition_reveal(DATE) + view_follow()
+
+anim_save(p, file = "Number of cumulative visitors for 2016 2017 2018.gif", width = 750, height = 500, res = 40, duration = 25, start_pause = 24, end_pause = 120, fps = 24)
+```
+
+```{r}
+# Test animation :
+temp <- visiteurs[visiteurs$annee %in% as.character(seq(2005,2019,1)),]
+temp <- temp[!is.na(temp$DATE),]
+
+liste <- data.frame(Nb_visiteurs_cumul_an=c(), annee=c(), DATE=c(), classement=c())
+for (jour in temp$DATE[temp$annee == "2019"]){
+  nb_vis <- temp[temp$DATE == jour, c("Nb_visiteurs_cumul_an", "annee"),]
+  nb_vis <- nb_vis[!is.na(nb_vis$Nb_visiteurs_cumul_an),]
+  nb_vis <- nb_vis[order(nb_vis$Nb_visiteurs_cumul_an),]
+  nb_vis$DATE <- as.Date(jour, origin = as.Date("1970-01-01"))
+  nb_vis$classement <- seq(1,nrow(nb_vis),1)
+  liste <- rbind(liste, nb_vis)
+}
+temp <- left_join(temp, liste, by = c("DATE", "Nb_visiteurs_cumul_an", "annee"))
+rm(liste, jour, nb_vis)
+
+# Theme
+my_background <- 'antiquewhite'
+my_pal <- "viridis" #colors for bars (from wesanderson)
+my_theme <- my_theme <- theme(rect = element_rect(fill = my_background),
+                              plot.background = element_rect(fill = my_background, color = NA),
+                              panel.background = element_rect(fill = my_background, color = NA),
+                              panel.border = element_blank(),
+                              plot.title = element_text(face = 'bold', size = 30),
+                              panel.grid.major.y = element_blank(),
+                              panel.grid.minor.y = element_blank(),
+                              panel.grid.major.x = element_line(color = 'grey75'),
+                              panel.grid.minor.x = element_line(color = 'grey75'),
+                              legend.position = 'none',
+                              plot.caption = element_text(size = 20),
+                              axis.ticks = element_blank(),
+                              axis.text.y =  element_blank())
+
+theme_set(theme_light() + my_theme)
+
+p <- ggplot(aes(classement, group = annee), data = temp) +
+  geom_tile(aes(y = Nb_visiteurs_cumul_an / 2, 
+                height = Nb_visiteurs_cumul_an,
+                width = 0.9, fill = as.numeric(as.character(annee))), alpha = 0.9) + scale_fill_viridis_c() +
+  geom_text(aes(y = Nb_visiteurs_cumul_an+10000, label = annee), nudge_y = -2, size = 15) +
+  #convert to character to get rid of blurry trailing decimals
+  geom_text(aes(x=17,y=175000, label=paste0(DATE)), size=20, color = 'gray45') +
+  scale_y_continuous(breaks=c(0, 50000, 100000, 150000, 200000, 250000, 300000)) +
+  coord_cartesian(clip = "off", expand = FALSE) +
+  coord_flip() +
+  labs(title = 'Best years :',
+       x = '',
+       y = '') +
+  transition_states(DATE, transition_length = 3, state_length = 2) +
+  ease_aes('cubic-in-out')
+
+
+anim_save(p, file = "Animation visiteurs_Classement années.gif", width = 1500, height = 1000, res = 40, duration = 120, start_pause = 48, end_pause = 240, fps = 24)
+```
