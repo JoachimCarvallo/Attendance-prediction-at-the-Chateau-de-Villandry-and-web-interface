@@ -247,7 +247,7 @@ visiteurs  <- visiteurs[!(visiteurs$annee %in% c(2018, 2019)),]
 
 visiteurs$annee <- NULL
 visiteurs_dev$annee <- NULL
-rm(i)
+rm(i, p, temp)
 
 save.image("Donnees pretes pour modelisation.Rdata")
 ```
