@@ -81,7 +81,7 @@ ggplot(visiteurs, aes(x= Nb_visiteurs, fill = vacances)) + geom_density(alpha=.5
 ggplot(visiteurs, aes(x=Temp.max, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
   geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Number of visitors")
 
-# Précipitations :
+# PrÃ©cipitations :
 ggplot(visiteurs, aes(x=Precipitation+1, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
   scale_x_continuous(trans = 'log2') + geom_smooth() + theme_bw() + 
   labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
@@ -137,7 +137,7 @@ ggplot(visiteurs, aes(x= ecart_sais, fill = vacances)) + geom_density(alpha=.5) 
 ggplot(visiteurs, aes(x=Temp.max, y= ecart_sais)) + geom_point(alpha=.1) + 
   geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Deviation from seasonality of the number of visitors")
 
-# Précipitations :
+# PrÃ©cipitations :
 ggplot(visiteurs, aes(x=Precipitation+1, y= ecart_sais)) + geom_point(alpha=.1) +
   scale_x_continuous(trans = 'log10') + geom_smooth() + theme_bw() + 
   labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
@@ -220,5 +220,5 @@ p <- ggplot(aes(classement, group = annee), data = temp) +
   ease_aes('cubic-in-out')
 
 
-anim_save(p, file = "Animation visiteurs_Classement années.gif", width = 1500, height = 1000, res = 40, duration = 120, start_pause = 48, end_pause = 240, fps = 24)
+anim_save(p, file = "Animation visiteurs_Classement annÃ©es.gif", width = 1500, height = 1000, res = 40, duration = 120, start_pause = 48, end_pause = 240, fps = 24)
 ```
