@@ -245,13 +245,12 @@ visiteurs$mediane_gliss <- NULL
 
 # Split between test set et dev set:
 ```{r}
-# We will use 2018 and 2019 as test set in order to better visualize the predictions of our models
-visiteurs_test <- visiteurs[visiteurs$annee %in% c(2018, 2019),]
-visiteurs  <- visiteurs[!(visiteurs$annee %in% c(2018, 2019)),]
+# We will use the last 3,5 years as test set in order to better visualize the predictions of our models
+visiteurs_test <- visiteurs[visiteurs$annee %in% c(2016, 2017, 2018, 2019),]
+visiteurs  <- visiteurs[!(visiteurs$annee %in% c(2016, 2017, 2018, 2019)),]
 
 visiteurs$annee <- NULL
 visiteurs_test$annee <- NULL
-rm(i, p, temp)
 
 save.image("Donnees pretes pour modelisation.Rdata")
 ```
