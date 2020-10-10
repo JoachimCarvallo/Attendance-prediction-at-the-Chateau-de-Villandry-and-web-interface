@@ -12,3 +12,20 @@ The objective of this project is to produce a model that predict the number of v
 
 
 ### 3. A few statistics 
+
+
+### 4. Selection of the best class of models
+
+Results :
+
+| Model                                        | RMSE          |
+| -------------------------------------------- |:-------------:|
+| Random Forest                                | 267.1256      |
+| **Xgboost**                                  | **250.3095**  |
+| CART                                         | 312.4196      |
+| Linear regression                            | 312.459       |
+| LASSO regression                             | 313.1293      |
+| Linear regression with interaction variables | 269.3086      |
+| LASSO regression with interaction variables  | 274.9008      |
+| Ridge regression with interaction variables  | 267.2635      |
+| Elastic net with interaction variables       | 272.9989      |
