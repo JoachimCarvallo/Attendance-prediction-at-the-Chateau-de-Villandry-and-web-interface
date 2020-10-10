@@ -44,6 +44,10 @@ To create this curve, first of all, we take the moving median over 7 days of the
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Animation%20Saisonality%20vs%20some%20years.gif" alt="Saisonality"	title="Animation of saisonality" width="750" height="375" style="text-align:center" />
 </p>
 
+<p align="justify">
+Finally, we remove the months from november to march to focus only on the main part of the season. Indeed, as we can see above, attendance over these months is very low, or even zero at times. We then split our database into two: 1991 to 2015 in the training set and 2016 to 2019 in the test set.
+</p>
+
 ### 3. A few statistics 
 
 
