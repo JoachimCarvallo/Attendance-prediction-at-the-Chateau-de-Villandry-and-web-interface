@@ -175,7 +175,7 @@ while(seuil_signif > 0.01){
 }
   
 lm <- lm(ecart_sais ~ ., data = visiteurs[, variables])
-#save.image("Variables regression linéaire.Rdata") 
+#save.image("Variables regression linÃ©aire.Rdata") 
 
 # Make prediction on test set and compute RMSE
 visiteurs_test$predict <- predict(lm, visiteurs_test)
@@ -281,79 +281,3 @@ Final results :
 | LASSO regression with interaction variables  | 274.9008      |
 | Ridge regression with interaction variables  | 267.2635      |
 | Elastic net with interaction variables       | 272.9989      |
-
-
-## TESTS Séries temporelles
-
-### Moyennes mobiles
-```{r}
-library("forecast")
-nb_visit <- ts(visiteurs$Nb_visiteurs[1:9672], start = c(1991, 1,1), frequency = 365)
-plot(nb_visit)
-model <- decompose(nb_visit[], "additive")
-plot(model)
-```
-
-```{r}
-data <- data.frame(date = visiteurs$DATE[1:9672], serie = model$x, saison = model$seasonal, trend = model$trend, random = model$random)
-ggplot(data[8000:10030,]) + geom_line(aes(x = date, y = trend)) + theme_bw()
-
-ggplot(data[1:10030,]) + geom_line(aes(x = date, y = trend)) + theme_bw() + scale_x_date(breaks = date_breaks("years"), labels = date_format("%y"))
-
-ggplot(data[1:10030,]) + geom_line(aes(x = date, y = random + trend - 887.32)) + theme_bw() + scale_x_date(breaks = date_breaks("years"), labels = date_format("%y"))
-
-ggplot(data[366:730,]) + geom_line(aes(x = date, y = saison + 887.32)) + theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b"))
-
-ggplot(data[8000:10402,]) + geom_line(aes(x = date, y = serie)) + geom_line(aes(x = date, y = saison + 887.32), col = "red") + theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b"))
-
-```
-
-### Moyenne Min Max par jours
-```{r}
-test <- visiteurs[1:9672,] %>% group_by(Mois, day(DATE)) %>% summarize(min = min(Nb_visiteurs), max = max(Nb_visiteurs), moy = mean(Nb_visiteurs)) 
-test$DATE <- visiteurs$DATE[1:365]
-ggplot(test) + geom_line(aes(x=DATE, y=min), col = "blue") + geom_line(aes(x=DATE, y=max), col = "red") + geom_line(aes(x=DATE, y=moy)) + theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) + ylab("")
-test$x <- substr(test$DATE, start = 6, stop = 10)
-visiteurs$x <- substr(visiteurs$DATE, start = 6, stop = 10)
-
-visiteurs <- left_join(visiteurs, test[,c(5,7)], by = "x")
-visiteurs$x <- NULL
-visiteurs$Nb_visiteurs[visiteurs$moy < 100] <- NA
-```
-
-
-### Test saison = moyenne de chanque jour de l'année : 
-```{r}
-stat_par_jour <- visiteurs[1:9672,] %>% group_by(Mois, Jour, wkd_special, mille_feux, vacances) %>% summarize(saison = mean(Nb_visiteurs)) 
-visiteurs <- left_join(visiteurs, stat_par_jour, by = c("Mois", "Jour", "wkd_special", "mille_feux", "vacances")) 
-ggplot(visiteurs[1:365,]) + geom_line(aes(x=DATE, y=saison)) + theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b"))
-
-visiteurs$visit_sans_sais <- (visiteurs$Nb_visiteurs - visiteurs$saison)
-ggplot(visiteurs[9500:10402,]) + geom_line(aes(x=DATE, y=visit_sans_sais)) + theme_bw() + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) 
-```
-
-
-### ARIMA
-```{r}
-nb_visit <- ts(visiteurs$Nb_visiteurs[1:9672], start = c(1991, 1,1), frequency = 365)
-
-temp <- visiteurs
-temp$DATE <- NULL
-temp$annee <- NULL
-temp$Mois <- NULL
-dmy <- dummyVars( ~. , data = temp, fullRank = T)
-temp <- data.frame(predict(dmy, newdata = temp))
-temp$Trop_chaud <- 0
-temp$Trop_chaud[temp$Temp.max > 28] <- 1
-  
-#ARIMA:
-arima <- auto.arima(nb_visit, d=0, D=1, start.p=5, start.q=0, start.P=0, start.Q=0, ic="bic", trace = T, xreg = as.matrix(temp[1:9672,c(2,11:15)]) )
-prev <- forecast(arima, xreg = as.matrix(temp[9673:10402,c(2,11:15)]))
-data <- data.frame(date = visiteurs$DATE[9673:10402], nb_vis = visiteurs$Nb_visiteurs[9673:10402], prev = prev$mean)
-ggplot(data) + geom_line(aes(x = date, y = nb_vis)) + geom_line(aes(x = date, y = prev), col = "red") + theme()
-
-visiteurs$pred <- c(prev$x - prev$residuals, prev$mean)
-ggplot(visiteurs[8943:9672,]) + geom_line(aes(x=DATE, y=Nb_visiteurs)) + geom_line(aes(x = DATE, y = pred), col = "red") + theme()
-visiteurs$res <- c(prev$residuals, prev$mean-visiteurs$Nb_visiteurs[9673:10402])
-ggplot(visiteurs) + geom_point(aes(x=DATE, y=res)) + theme()
-```
