@@ -158,12 +158,11 @@ ggplot(visiteurs[visiteurs$annee == 2018,])+ geom_line(aes(x = DATE, y = Nb_visi
 library("gganimate")
 temp <- visiteurs
 year(temp$DATE) <- 2020
-p <- ggplot(temp[temp$annee %in% c(1991,1995,2000,2005,2010,2015:2018),])+ geom_line(aes(x = DATE, y = Nb_visiteurs)) + geom_line(aes(x = DATE, y = saison), col = "red") + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) + transition_states(annee, state_length = 3) + labs(x = "Annee: {closest_state}", y= "Nombre de visiteurs") + theme_bw(base_size = 23)
+p <- ggplot(temp[temp$annee %in% c(1991,1995,2000,2005,2010,2015:2018),]) + geom_line(aes(x = DATE, y = Nb_visiteurs)) + geom_line(aes(x = DATE, y = saison), col = "red") + scale_x_date(breaks = date_breaks("months"), labels = date_format("%b")) + transition_states(annee, state_length = 3) + labs(x = "Year: {closest_state}", y= "Number of visitors") + theme_bw(base_size = 15)
 
-anim_save(p, file = "Animation moyenne vs annees.gif", width = 1500, height = 750, duration = 45, fps = 15)
+anim_save(p, file = "Animation Saisonality vs some years.gif", width = 1000, height = 500, duration = 45, fps = 20)
 
 rm(mediane_gliss, saison)
-
 ```
 
 ## New variables
