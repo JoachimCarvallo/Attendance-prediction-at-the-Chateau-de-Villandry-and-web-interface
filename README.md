@@ -51,13 +51,13 @@ Finally, we remove the months from november to march to focus only on the main p
 ### 3. A few statistics 
 
 <p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20max%20temperature.jpeg" alt="Max temp"	title="Deviation from seasonality of the number of visitors against max temperature" width="450" height="300" />
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20precipitation.jpeg" alt="Precipitations"	title="Deviation from seasonality of the number of visitors against precipitations" width="450" height="300" />  
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20max%20temperature.jpeg" alt="Max temp"	title="Deviation from seasonality of the number of visitors against max temperature" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20precipitation.jpeg" alt="Precipitations"	title="Deviation from seasonality of the number of visitors against precipitations" width="390" height="260" />  
 </p>
 
 <p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="450" height="300" />
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="450" height="300" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
 </p>
 
 
