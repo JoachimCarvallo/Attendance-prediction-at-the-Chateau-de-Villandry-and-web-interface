@@ -31,6 +31,7 @@ We also had sunshine duration but we couldn't use it because Météo France does
 The decisions taken in this section are mostly informed by the experience of the director of the Château de Villandry. 
 First of all, we put together the number of visitors at Villandry, the weather data, the holiday's periods data and the public holidays data. Those two last datasets are available on https://www.data.gouv.fr/. Then a few corrections are applied to the data : public holidays on weekends are not relevant, removal of the anomaly of June 2016 (the castle had to close because of risks of flooding), etc. 
 </p>
+
 **New variables :** month, day of the week, information on long weekends, special events and attendance of the last few days. 
 
 **Transfomation of the variable to explain :** <p align="justify"> We will first create a relevant curve of the normal seasonnality in Villandry. We want to get a curve as smooth as possible, that represent, for a given day of the year, the normal frequentation (thus without knowing if it's a weekend, if there is a special event, if it's rainy, etc). Then, our variable to be explained will be the difference to the normal seasonality for each day.
