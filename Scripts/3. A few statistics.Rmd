@@ -60,13 +60,13 @@ ggplot(visiteurs[visiteurs$annee %in% c("2016", "2017", "2018"),]) +
 # Covariables against number of visitors
 ```{r}
 # Month :
-ggplot(visiteurs, aes(x=Mois, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Month", y = "Number of visitors")
+ggplot(visiteurs, aes(x=Mois, y= Nb_visiteurs)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Month", y = "Number of visitors")
 
 # Day of the week :
-ggplot(visiteurs, aes(x=Jour, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Day of the week", y = "Number of visitors")
+ggplot(visiteurs, aes(x=Jour, y= Nb_visiteurs)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Day of the week", y = "Number of visitors")
 
 # Public holidays :
-ggplot(visiteurs, aes(x=est_jour_ferie, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Public holiday ?", y = "Number of visitors")
+ggplot(visiteurs, aes(x=est_jour_ferie, y= Nb_visiteurs)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Public holiday ?", y = "Number of visitors")
 ggplot(visiteurs, aes(x= Nb_visiteurs, fill = est_jour_ferie)) + geom_density(alpha=.5) + 
   scale_fill_manual( values = c("grey","green")) + theme_bw() + 
   labs(x = "Number of visitors", y = NULL, fill = "Public holiday ?")
@@ -75,38 +75,39 @@ ggplot(visiteurs, aes(x= Nb_visiteurs, fill = est_jour_ferie)) + geom_density(al
 visiteurs$vacances <- as.factor(visiteurs$vacances)
 ggplot(visiteurs, aes(x=vacances, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Number of vacation zones", y = "Number of visitors")
 ggplot(visiteurs, aes(x= Nb_visiteurs, fill = vacances)) + geom_density(alpha=.5) + 
-  theme_bw() + labs(x = "Number of visitors", y = NULL, fill = "Number of vacation zones")
+  scale_fill_manual( values = c("grey","green")) + theme_bw() + 
+  labs(x = "Number of visitors", y = NULL, fill = "Number of vacation zones")
 
 # Maximum temperature :
 ggplot(visiteurs, aes(x=Temp.max, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Maximum temperature of the day", y = "Number of visitors")
 
 # Précipitations :
 ggplot(visiteurs, aes(x=Precipitation+1, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  scale_x_continuous(trans = 'log2') + geom_smooth() + theme_bw() + 
+  scale_x_continuous(trans = 'log2') + geom_smooth(col = "green3") + theme_bw() + 
   labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
 
 # Description of the weather at 1 pm :
-ggplot(visiteurs, aes(x=Desc_13h, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Number of visitors")
+ggplot(visiteurs, aes(x=Desc_13h, y= Nb_visiteurs)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Number of visitors")
 
 # General description of the weather :
-ggplot(visiteurs, aes(x=descr_generale, y= Nb_visiteurs)) + geom_boxplot() + theme_bw() + labs(x = "General description of the weather", y = "Number of visitors")
+ggplot(visiteurs, aes(x=descr_generale, y= Nb_visiteurs)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "General description of the weather", y = "Number of visitors")
 
 # Weather grade :
 ggplot(visiteurs, aes(x=note_temps, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Weather grade", y = "Number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Weather grade", y = "Number of visitors")
 
 #  Deviation from seasonality day-1 :
 ggplot(visiteurs, aes(x=ecart_prec_1, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-1", y = "Number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Deviation from seasonality day-1", y = "Number of visitors")
 
 #  Deviation from seasonality day-2 :
 ggplot(visiteurs, aes(x=ecart_prec_2, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-2", y = "Number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Deviation from seasonality day-2", y = "Number of visitors")
 
 #  Deviation from seasonality day-3 :
 ggplot(visiteurs, aes(x=ecart_prec_3, y= Nb_visiteurs)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Deviation from seasonality day-3", y = "Number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Deviation from seasonality day-3", y = "Number of visitors")
 ```
 
 
@@ -116,41 +117,46 @@ Considering the deviation from seasonality is probably more relevant here than t
 
 ```{r}
 # Month :
-ggplot(visiteurs, aes(x=Mois, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Month", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=Mois, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Month", y = "Deviation from seasonality of the number of visitors")
 
 # Day of the week :
-ggplot(visiteurs, aes(x=Jour, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Day of the week", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=Jour, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Day of the week", y = "Deviation from seasonality of the number of visitors")
 
 # Public holidays :
-ggplot(visiteurs, aes(x=est_jour_ferie, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Public holiday ?", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=est_jour_ferie, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Public holiday ?", y = "Deviation from seasonality of the number of visitors")
 ggplot(visiteurs, aes(x= ecart_sais, fill = est_jour_ferie)) + geom_density(alpha=.5) +
-  scale_fill_manual( values = c("grey","green")) + theme_bw() + 
+  scale_fill_manual( values = c("grey","green3")) + theme_bw() + 
   labs(x = "Deviation from seasonality of the number of visitors", y = NULL, fill = "Public holiday ?")
 
 # Holidays :
 visiteurs$vacances <- as.factor(visiteurs$vacances)
-ggplot(visiteurs, aes(x=vacances, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Number of vacation zones", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=vacances, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Number of vacation zones", y = "Deviation from seasonality of the number of visitors")
 ggplot(visiteurs, aes(x= ecart_sais, fill = vacances)) + geom_density(alpha=.5) + 
-  theme_bw() + labs(x = "Deviation from seasonality of the number of visitors", y = NULL, fill = "Number of vacation zones")
+  scale_fill_manual( values = c("grey","green3")) + theme_bw() + 
+  labs(x = "Deviation from seasonality of the number of visitors", y = NULL, fill = "Number of vacation zones")
 
 # Maximum temperature :
 ggplot(visiteurs, aes(x=Temp.max, y= ecart_sais)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Maximum temperature of the day", y = "Deviation from seasonality of the number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Maximum temperature of the day", y = "Deviation from seasonality of the number of visitors")
 
 # Précipitations :
 ggplot(visiteurs, aes(x=Precipitation+1, y= ecart_sais)) + geom_point(alpha=.1) +
-  scale_x_continuous(trans = 'log10') + geom_smooth() + theme_bw() + 
+  scale_x_continuous(trans = 'log10') + geom_smooth(col = "green3") + theme_bw() + 
   labs(x = "Precipitation (log scale)", y = "Deviation from seasonality of the number of visitors")
 
 # Description of the weather at 1 pm :
-ggplot(visiteurs, aes(x=Desc_13h, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=Desc_13h, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "Description of the weather at 1 pm", y = "Deviation from seasonality of the number of visitors")
 
 # General description of the weather :
-ggplot(visiteurs, aes(x=descr_generale, y= ecart_sais)) + geom_boxplot() + theme_bw() + labs(x = "General description of the weather", y = "Deviation from seasonality of the number of visitors")
+ggplot(visiteurs, aes(x=descr_generale, y= ecart_sais)) + geom_boxplot(fill = "green3", alpha = .4) + theme_bw() + labs(x = "General description of the weather", y = "Deviation from seasonality of the number of visitors")
 
 # Weather grade :
 ggplot(visiteurs, aes(x=note_temps, y= ecart_sais)) + geom_point(alpha=.1) + 
-  geom_smooth() + theme_bw() + labs(x = "Weather grade", y = "Deviation from seasonality of the number of visitors")
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Weather grade", y = "Deviation from seasonality of the number of visitors")
+
+#  Deviation from seasonality day-1 :
+ggplot(visiteurs, aes(x=ecart_prec_1, y= ecart_sais)) + geom_point(alpha=.1) + 
+  geom_smooth(col = "green3") + theme_bw() + labs(x = "Deviation from seasonality day-1", y = "Number of visitors")
 ```
 
 
