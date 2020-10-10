@@ -22,6 +22,7 @@ We also had sunshine duration but we couldn't use it because Météo France does
 
 ### 2. Data preparation
 
+Here we put together the number of visitors at Villandry, the weather data, the holiday's periods data and the public holidays data. Those two last datasets are available on https://www.data.gouv.fr/.
 
 ### 3. A few statistics 
 
