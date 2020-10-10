@@ -37,7 +37,7 @@ First of all, we put together the number of visitors at Villandry, the weather d
 **Transfomation of the variable to explain :** <p align="justify"> We will first create a relevant curve of the normal seasonnality in Villandry. We want to get a curve as smooth as possible, that represent, for a given day of the year, the normal frequentation (thus without knowing if it's a weekend, if there is a special event, if it's rainy, etc). Then, our variable to be explained will be the difference to the normal seasonality for each day.
 </p>
 <p align="justify">
-To create this curve, first of all, we take the moving median over 7 days of the number of visitors. The aim of this moving median is to smooth the large spikes in the data (moving averge would have been to sensible to thoses spikes). Then we average the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27). Finaly,  we apply a final smoothing to the curve with a mobile average over 5 days. 
+To create this curve, first of all, we take the moving median over 7 days of the number of visitors. The aim of this moving median is to smooth the large spikes in the data (moving averge would have been to sensible to thoses spikes). Then we average the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27). Finaly,  we apply a final smoothing to the curve with a mobile average over 5 days. On the animation below, we can see the seasonality curve in red and the attendance for a few years in black :
 </p>
 
 <p align="center">
