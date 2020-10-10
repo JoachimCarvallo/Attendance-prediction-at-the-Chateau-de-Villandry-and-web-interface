@@ -5,7 +5,7 @@ The objective of this project is to produce a model that predict the number of v
 
 [Here is a link to check the web app.](https://joachimcarvallo.shinyapps.io/pred-freq-villandry/) It's in french because it is meant to be used by a french user. 
 
-## Project overview :
+## Quick overview of the project :
 
 ### 1. Webscraping of historical weather data
 
@@ -22,7 +22,16 @@ We also had sunshine duration but we couldn't use it because Météo France does
 
 ### 2. Data preparation
 
-Here we put together the number of visitors at Villandry, the weather data, the holiday's periods data and the public holidays data. Those two last datasets are available on https://www.data.gouv.fr/.
+The decisions taken in this section are mostly informed by the experience of the director of the Château de Villandry. 
+First of all, we put together the number of visitors at Villandry, the weather data, the holiday's periods data and the public holidays data. Those two last datasets are available on https://www.data.gouv.fr/. Then a few corrections are applied to the data : public holidays on weekends are not relevant, removal of the anomaly of June 2016 (the castle had to close because of risks of flooding), etc. 
+
+**New variables :** month, day of the week, information on long weekends, special events and attendance of the last few days. 
+
+**Transfomation of the variable to explain :** We will first create a relevant curve of the normal seasonnality in Villandry. We want to get a curve as smooth as possible, that represent, for a given day of the year, the normal frequentation (thus without knowing if it's a weekend, if there is a special event, if it's rainy, etc). Then, our variable to be explained will be the difference to the normal seasonality for each day.
+
+To create this curve, first of all, we take the moving median over 7 days of the number of visitors. The aim of this moving median is to smooth the large spikes in the data (moving averge would have been to sensible to thoses spikes). Then we average the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27). Finaly,  we apply a final smoothing to the curve with a mobile average over 5 days. 
+
+![alt text](https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Animation%20Saisonality%20vs%20some%20years.gif)
 
 ### 3. A few statistics 
 
