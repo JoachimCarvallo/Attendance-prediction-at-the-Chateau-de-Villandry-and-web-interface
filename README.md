@@ -12,6 +12,7 @@ The objective of this project is to produce a model that predict the number of v
 
 ### 1. Webscraping of historical weather data
 
+<p align="justify">
 On the [Météo France's web site](https://meteofrance.com/), there use to be freely available data for every recorded day at a meteo station close to Villandry (20 km). This service is no longer available. The R library "rvest" is used to gather all the data available between 1991 and 2019. Missing data is completed with the data found on this [web site](https://www.historique-meteo.net/france/centre/tours/). The objective was to obtain a weather database, in the same format as that which can be obtained on the Météo France website for the weather forecast of the next day, in order to be able to make real predictions with the future model.
 
 The variables of the finale database are :
@@ -22,9 +23,11 @@ The variables of the finale database are :
 - Precipitation : the number of millimeters of rain that fell
 
 We also had sunshine duration but we couldn't use it because Météo France does not provide a forecast for it. 
+</p>
 
 ### 2. Data preparation
 
+<p align="justify">
 The decisions taken in this section are mostly informed by the experience of the director of the Château de Villandry. 
 First of all, we put together the number of visitors at Villandry, the weather data, the holiday's periods data and the public holidays data. Those two last datasets are available on https://www.data.gouv.fr/. Then a few corrections are applied to the data : public holidays on weekends are not relevant, removal of the anomaly of June 2016 (the castle had to close because of risks of flooding), etc. 
 
@@ -33,6 +36,7 @@ First of all, we put together the number of visitors at Villandry, the weather d
 **Transfomation of the variable to explain :** We will first create a relevant curve of the normal seasonnality in Villandry. We want to get a curve as smooth as possible, that represent, for a given day of the year, the normal frequentation (thus without knowing if it's a weekend, if there is a special event, if it's rainy, etc). Then, our variable to be explained will be the difference to the normal seasonality for each day.
 
 To create this curve, first of all, we take the moving median over 7 days of the number of visitors. The aim of this moving median is to smooth the large spikes in the data (moving averge would have been to sensible to thoses spikes). Then we average the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27). Finaly,  we apply a final smoothing to the curve with a mobile average over 5 days. 
+</p>
 
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Animation%20Saisonality%20vs%20some%20years.gif" alt="Saisonality"	title="Animation of saisonality" width="750" height="375" style="text-align:center" />
