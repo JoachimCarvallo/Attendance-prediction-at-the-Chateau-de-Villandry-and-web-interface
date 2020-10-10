@@ -31,7 +31,7 @@ First of all, we put together the number of visitors at Villandry, the weather d
 
 To create this curve, first of all, we take the moving median over 7 days of the number of visitors. The aim of this moving median is to smooth the large spikes in the data (moving averge would have been to sensible to thoses spikes). Then we average the moving median for each day of the year, with more weight on recent years (linear progression of weights over the years from 1 to 27). Finaly,  we apply a final smoothing to the curve with a mobile average over 5 days. 
 
-![alt text](https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Animation%20Saisonality%20vs%20some%20years.gif)
+![Animation 1](Plots/Animation Saisonality vs some years.gif)
 
 ### 3. A few statistics 
 
