@@ -14,17 +14,15 @@ The objective of this project is to produce a model that predict the number of v
 
 <p align="justify">
 On the <a href="https://meteofrance.com/">Météo France's web site</a>, there use to be freely available data for every recorded day at a meteo station close to Villandry (20 km). This service is no longer available. The R library "rvest" is used to gather all the data available between 1991 and 2019. Missing data is completed with the data found on this <a href="https://www.historique-meteo.net/france/centre/tours/">web site</a>. The objective was to obtain a weather database, in the same format as that which can be obtained on the Météo France website for the weather forecast of the next day, in order to be able to make real predictions with the future model.
-
-<p align="justify">
-The variables of the finale database are :
-<ul>
-  <li>General description of the weather of the day : A combination of the weather informations available at 10 a.m., 1 p.m. and 4 p.m. (for exemple : rainy, sunny, covered, covered and sunny, etc)</li>
-  <li>Description of the weather at 1pm (the descriptions of the weather at 10 a.m. and 4 p.m. had too mutch missing values)</li>
-  <li>Weather grade fo the day : A quantitative representation of the quality of the weather (only depending on weather description at 10 a.m., 1 p.m. and 4 p.m.)</li>
-  <li>Maximum temperature of the day</li>
-  <li>Precipitation : the number of millimeters of rain that fell</li>
-</ul>
 </p>
+
+The variables of the finale database are :
+
+- General description of the weather of the day : A combination of the weather informations available at 10 a.m., 1 p.m. and 4 p.m. (for exemple : rainy, sunny, covered, covered and sunny, etc)
+- Description of the weather at 1pm (the descriptions of the weather at 10 a.m. and 4 p.m. had too mutch missing values)
+- Weather grade fo the day : A quantitative representation of the quality of the weather (only depending on weather description at 10 a.m., 1 p.m. and 4 p.m.)
+- Maximum temperature of the day
+- Precipitation : the number of millimeters of rain that fell
 
 We also had sunshine duration but we couldn't use it because Météo France does not provide a forecast for it. 
 
@@ -75,12 +73,13 @@ Thoses two observations seem very intuitive because the Château de Villandry is
 </p>
 
 <p align="justify">
-<strong>Day of the week :</strong> 
+<strong>Day of the week :</strong> On the first graph, on the left, we find on the x-axis the days of the week and on the y-axis a boxplot representing attendance. We observe that Monday tends to be below seasonality, then that attendance tends to increase gradually until Thursday. Friday is lower and almost back to Monday level. Then, the weekend logically tends to have a high attendance, in particular on Sundays.
 </p>
 
 <p align="justify">
-<strong>Public holidays :</strong>
+<strong>Public holidays :</strong> On this last graph, we have the distribution of the deviation from the seasonality of normal days and public holidays. We can observe that the public holidays have, in general, a much greater attendance than the seasonality. However, they also have a larger variance than on other days.
 </p>
+
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
