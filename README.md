@@ -15,15 +15,16 @@ The objective of this project is to produce a model that predict the number of v
 <p align="justify">
 On the <a href="https://meteofrance.com/">Météo France's web site</a>, there use to be freely available data for every recorded day at a meteo station close to Villandry (20 km). This service is no longer available. The R library "rvest" is used to gather all the data available between 1991 and 2019. Missing data is completed with the data found on this <a href="https://www.historique-meteo.net/france/centre/tours/">web site</a>. The objective was to obtain a weather database, in the same format as that which can be obtained on the Météo France website for the weather forecast of the next day, in order to be able to make real predictions with the future model.
 
+<p align="justify">
 The variables of the finale database are :
 - General description of the weather of the day : A combination of the weather informations available at 10 a.m., 1 p.m. and 4 p.m. (for exemple : rainy, sunny, covered, covered and sunny, etc)
 - Description of the weather at 1pm (the descriptions of the weather at 10 a.m. and 4 p.m. had too mutch missing values)
 - Weather grade fo the day : A quantitative representation of the quality of the weather (only depending on weather description at 10 a.m., 1 p.m. and 4 p.m.)
 - Maximum temperature of the day
 - Precipitation : the number of millimeters of rain that fell
+</p>
 
 We also had sunshine duration but we couldn't use it because Météo France does not provide a forecast for it. 
-</p>
 
 ### 2. Data preparation
 
