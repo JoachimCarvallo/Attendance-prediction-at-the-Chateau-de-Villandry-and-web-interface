@@ -57,8 +57,9 @@ Finally, we remove the months from november to march to focus only on the main p
  
 In this section, we will try to see how our covariates relate to attendance, using bivariate plots. 
 
-**maximum temperature of the day :** We can see on the first graph the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend: the deviation from normal seasonality tends to be greater (in the positive direction) when the temperature rises to a threshold. around 28 ° C from which each additional degree seems to reduce attendance. This conclusion coincides very well with intuition.
+**Maximum temperature of the day :** We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises to a threshold around 28 ° C. From this threshold, each additional degree seems to reduce attendance. This conclusion coincides very well with intuition.
  
+ **Precipitations :**
 </p> 
 
 <p align="center">
