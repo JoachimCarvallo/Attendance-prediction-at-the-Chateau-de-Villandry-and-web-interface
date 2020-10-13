@@ -54,12 +54,11 @@ Finally, we remove the months from november to march to focus only on the main p
 ### 3. A few statistics 
 
 <p align="justify">
- 
 In this section, we will try to see how our covariates relate to attendance, using bivariate plots. 
 
-**Maximum temperature of the day :** We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises to a threshold around 28 ° C. From this threshold, each additional degree seems to reduce attendance. This conclusion coincides very well with intuition.
+**Maximum temperature of the day :** We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises. This trend continues up to a threshold, around 28°C, from which the trend is reversed : each additional degree seems to reduce attendance. 
  
- **Precipitations :**
+ **Precipitations :** The second graph, on the right, is similar to the previous one but with precipitation. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend: the more rain, the less frequentation. This observation and that of the temperature seem very intuitive because the Château de Villandry is particularly famous for its gardens.
 </p> 
 
 <p align="center">
