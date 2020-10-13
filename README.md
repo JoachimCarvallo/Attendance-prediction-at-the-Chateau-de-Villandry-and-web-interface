@@ -83,15 +83,11 @@ Results :
 
 Best model :
 
-| Parameter 	     |  Value      |
-| ---------------- |:-----------:|
-| eta              | 0.01        |
-| gamma            | 0.74593472  |
-| max_depth        | 7           |
-| subsample        | 0.4751654   |
-| colsample_bytree | 0.5389854   |
-| min_child_weight | 6.2127380   |
-| *RMSE*           | *240.0006*  |
+| Parameter : ||  eta      | gamma      | max_depth | subsample | colsample_bytree | min_child_weight | **RMSE**     |
+| ----------- ||-----------|------------|-----------|-----------|------------------|------------------|--------------|
+| Value :     ||  0.01     | 0.74593472 | 7         | 0.4751654 | 0.5389854        | 6.2127380        | **240.0006** |
+
+
 
 
 <p align="center">
