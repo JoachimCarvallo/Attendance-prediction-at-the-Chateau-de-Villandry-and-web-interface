@@ -58,13 +58,21 @@ In this section, we will try to see how our covariates relate to attendance, usi
 
 **Maximum temperature of the day :** We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises. This trend continues up to a threshold, around 28°C, from which the trend is reversed : each additional degree seems to reduce attendance. 
  
- **Precipitations :** The second graph, on the right, is similar to the previous one but with precipitation. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend: the more rain, the less frequentation. This observation and that of the temperature seem very intuitive because the Château de Villandry is particularly famous for its gardens.
+ **Precipitations :** The second graph, on the right, is similar to the previous one but with precipitations. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend : the more rain, the less frequentation. 
+ 
+ Thoses two observations seem very intuitive because the Château de Villandry is particularly famous for its gardens : these trends are probably cause and effect links. However, they seem far from explaining all the variability of our attendance around seasonality.
 </p> 
 
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20max%20temperature.jpeg" alt="Max temp"	title="Deviation from seasonality of the number of visitors against max temperature" width="390" height="260" />
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20precipitation.jpeg" alt="Precipitations"	title="Deviation from seasonality of the number of visitors against precipitations" width="390" height="260" />  
 </p>
+
+<p align="justify">
+  
+**Day of the week :** 
+ 
+**Public holidays :**
 
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
