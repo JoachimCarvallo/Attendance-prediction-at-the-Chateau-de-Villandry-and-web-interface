@@ -17,11 +17,13 @@ On the <a href="https://meteofrance.com/">Météo France's web site</a>, there u
 
 <p align="justify">
 The variables of the finale database are :
-- General description of the weather of the day : A combination of the weather informations available at 10 a.m., 1 p.m. and 4 p.m. (for exemple : rainy, sunny, covered, covered and sunny, etc)
-- Description of the weather at 1pm (the descriptions of the weather at 10 a.m. and 4 p.m. had too mutch missing values)
-- Weather grade fo the day : A quantitative representation of the quality of the weather (only depending on weather description at 10 a.m., 1 p.m. and 4 p.m.)
-- Maximum temperature of the day
-- Precipitation : the number of millimeters of rain that fell
+<ul>
+  <li>General description of the weather of the day : A combination of the weather informations available at 10 a.m., 1 p.m. and 4 p.m. (for exemple : rainy, sunny, covered, covered and sunny, etc)</li>
+  <li>Description of the weather at 1pm (the descriptions of the weather at 10 a.m. and 4 p.m. had too mutch missing values)</li>
+  <li>Weather grade fo the day : A quantitative representation of the quality of the weather (only depending on weather description at 10 a.m., 1 p.m. and 4 p.m.)</li>
+  <li>Maximum temperature of the day</li>
+  <li>Precipitation : the number of millimeters of rain that fell</li>
+</ul>
 </p>
 
 We also had sunshine duration but we couldn't use it because Météo France does not provide a forecast for it. 
