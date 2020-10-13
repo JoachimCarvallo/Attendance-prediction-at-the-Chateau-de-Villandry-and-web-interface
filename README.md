@@ -41,7 +41,7 @@ To create this curve, first of all, we take the moving median over 7 days of the
 </p>
 
 <p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Animation%20Saisonality%20vs%20some%20years.gif" alt="Saisonality"	title="Animation of saisonality" width="750" height="375" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/2.%20Data%20preparation/Animation%20Saisonality%20vs%20some%20years.gif" alt="Saisonality"	title="Animation of saisonality" width="750" height="375" />
 </p>
 
 <p align="justify">
@@ -54,20 +54,14 @@ Finally, we remove the months from november to march to focus only on the main p
 ### 3. A few statistics 
 
 <p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20max%20temperature.jpeg" alt="Max temp"	title="Deviation from seasonality of the number of visitors against max temperature" width="390" height="260" />
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20precipitation.jpeg" alt="Precipitations"	title="Deviation from seasonality of the number of visitors against precipitations" width="390" height="260" />  
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20max%20temperature.jpeg" alt="Max temp"	title="Deviation from seasonality of the number of visitors against max temperature" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20precipitation.jpeg" alt="Precipitations"	title="Deviation from seasonality of the number of visitors against precipitations" width="390" height="260" />  
 </p>
 
 <p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
 </p>
-
-
-
-
-
-
 
 ### 4. Selection of the best class of models
 
@@ -84,3 +78,29 @@ Results :
 | LASSO regression with interaction variables  | 274.9008      |
 | Ridge regression with interaction variables  | 267.2635      |
 | Elastic net with interaction variables       | 272.9989      |
+
+### 5. Optimization and analysis of the model
+
+Best model :
+
+| Parameter 	     |  Value      |
+| ---------------- |:-----------:|
+| eta              | 0.01        |
+| gamma            | 0.74593472  |
+| max_depth        | 7           |
+| subsample        | 0.4751654   |
+| colsample_bytree | 0.5389854   |
+| min_child_weight | 6.2127380   |
+| *RMSE*           | *240.0006*  |
+
+
+<p align="center">
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Number%20of%20visitors%20-%20prediction%20vs%20real%20(2018).jpeg" alt="Predict"	title="Number of visitors - prediction vs real (2018)" width="750" height="375" />
+</p>
+<p align="center">
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Error%20as%20a%20proportion%20of%20the%20number%20of%20visitors.jpeg" alt="Error proportion"	title="Error as a proportion of the number of visitors" width="390" height="260" />
+</p>
+
+
+
+
