@@ -3,7 +3,7 @@
 ## Description :
 
 <p align="justify">
-The objective of this project is to produce a model that predict the number of visitors at the Château de Villandry for a given day. This model must be accompanied by a web interface in order to be able to access its predictions easily. The prediction will be based on weather data obtained by webscraping the Météo France website, as well as all the relevant informations on the day in question, such as the season, the day of the week, holiday periods, public holidays, etc.
+The objective of this project is to produce a model that predict the number of visitors at the Château de Villandry the day before for the next day. This model must be accompanied by a web interface in order to be able to access its predictions easily. The prediction will be based on weather data obtained by scraping the Météo France website, as well as all the relevant informations on the day in question, such as the season, the day of the week, holiday periods, public holidays, etc.
 </p>
   
 [Here is a link to check the web app.](https://joachimcarvallo.shinyapps.io/pred-freq-villandry/) It is in french because it is meant to be used by a french user (as well as the variables names). 
@@ -84,6 +84,8 @@ Thoses two observations seem very intuitive because the Château de Villandry is
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
 </p>
+
+We don't walk through all of the variables here, but these early observations look promising for modeling.
 
 ### 4. Selection of the best class of models
 
