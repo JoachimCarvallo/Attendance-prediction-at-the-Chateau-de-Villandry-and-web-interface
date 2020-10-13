@@ -61,7 +61,8 @@ In this section, we will try to see how our covariates relate to attendance, usi
 
 <p align="justify">
 <strong>Precipitations :</strong> The second graph, on the right, is similar to the previous one but with precipitations. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend : the more rain, the less frequentation. 
- 
+ </p>
+<p align="justify">
 Thoses two observations seem very intuitive because the Château de Villandry is particularly famous for its gardens : these trends are probably cause and effect links. However, they seem far from explaining all the variability of our attendance around seasonality.
 </p> 
 
@@ -72,7 +73,9 @@ Thoses two observations seem very intuitive because the Château de Villandry is
 
 <p align="justify">
 <strong>Day of the week :</strong> 
+</p>
 
+<p align="justify">
 <strong>Public holidays :</strong>
 </p>
 <p align="center">
