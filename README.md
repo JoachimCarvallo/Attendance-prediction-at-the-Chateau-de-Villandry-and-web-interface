@@ -53,14 +53,16 @@ Finally, we remove the months from november to march to focus only on the main p
 
 ### 3. A few statistics 
 
-<p align="justify">
 In this section, we will try to see how our covariates relate to attendance, using bivariate plots. 
 
-**Maximum temperature of the day :** We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises. This trend continues up to a threshold, around 28°C, from which the trend is reversed : each additional degree seems to reduce attendance. 
+<p align="justify">
+<strong>Maximum temperature of the day :</strong> We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises. This trend continues up to a threshold, around 28°C, from which the trend is reversed : each additional degree seems to reduce attendance. 
+</p>
+
+<p align="justify">
+<strong>Precipitations :</strong> The second graph, on the right, is similar to the previous one but with precipitations. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend : the more rain, the less frequentation. 
  
- **Precipitations :** The second graph, on the right, is similar to the previous one but with precipitations. The x-axis is on a logarithmic scale and 1 corresponds to 0 mm fallen. We are also seeing an interesting trend : the more rain, the less frequentation. 
- 
- Thoses two observations seem very intuitive because the Château de Villandry is particularly famous for its gardens : these trends are probably cause and effect links. However, they seem far from explaining all the variability of our attendance around seasonality.
+Thoses two observations seem very intuitive because the Château de Villandry is particularly famous for its gardens : these trends are probably cause and effect links. However, they seem far from explaining all the variability of our attendance around seasonality.
 </p> 
 
 <p align="center">
@@ -69,11 +71,10 @@ In this section, we will try to see how our covariates relate to attendance, usi
 </p>
 
 <p align="justify">
-  
-**Day of the week :** 
- 
-**Public holidays :**
+<strong>Day of the week :</strong> 
 
+<strong>Public holidays :</strong>
+</p>
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20day%20of%20the%20week.jpeg" alt="Days of the week"	title="Deviation from seasonality of the number of visitors against days of the week" width="390" height="260" />
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
