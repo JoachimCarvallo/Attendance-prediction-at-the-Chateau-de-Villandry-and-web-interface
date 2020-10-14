@@ -6,7 +6,7 @@
 The objective of this project is to produce a model that predict the number of visitors at the Château de Villandry the day before for the next day. This model must be accompanied by a web interface in order to be able to access its predictions easily. The prediction will be based on weather data obtained by scraping the Météo France website, as well as all the relevant informations on the day in question, such as the season, the day of the week, holiday periods, public holidays, etc.
 </p>
   
-[Here is a link to check the web app.](https://joachimcarvallo.shinyapps.io/pred-freq-villandry/) It is in french because it is meant to be used by a french user (as well as the variables names). 
+[Here is a link to check the web app.](https://joachimcarvallo.shinyapps.io/pred-freq-villandry/) It is in french (as well as the variables names) because it is meant to be used by a french user. 
 
 ## Quick overview of the project :
 
@@ -85,12 +85,14 @@ Thoses two observations seem very intuitive because the Château de Villandry is
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/3.%20A%20few%20statistics/Deviation%20from%20seasonality%20of%20the%20number%20of%20visitors%20against%20public%20holiday%20-%20Density.jpeg" alt="Public holidays"	title="Deviation from seasonality of the number of visitors against public holidays" width="390" height="260" />
 </p>
 
-We don't walk through all of the variables here, but these early observations look promising for modeling.
+We will not walk through all of the variables here, but these early observations look promising for modeling.
 
 ### 4. Selection of the best class of models
 
-Results :
-
+<p align="justify">
+The objective of this part is to identify the class of models that performs best on our dataset. We will simply train a model of each classes, without much optimization, and compare they in order to identify the class that seem the more suited to our task. We will evaluate our models by their predictive qualities empirically on the test data set. The performance evaluation metric will be the ordinary least squares. Of course, we will not be able to consider all the classes of regression models. We will only focus on tree based methods as well as linear models. Specifically a CART, a random forest, and an XGBoost for tree-based methods. And linear regression, as well as its Ridge and LASSO extensions for linear models. For linear models, we will also feed them with "interaction variables" in addition to the starting variables in order to help them capture the interactions between variables (which they can't do on their own like tree-based methods). These simply consist of the product of all possible pairs of variables. Even if it's only second order interactions, the number of pairs is very large and therefore the selection of useful variables is very important. 
+</p>
+**Results :**
 | Model                                        | RMSE          |
 | -------------------------------------------- |:-------------:|
 | Random Forest                                | 267.1256      |
@@ -102,6 +104,10 @@ Results :
 | LASSO regression with interaction variables  | 274.9008      |
 | Ridge regression with interaction variables  | 267.2635      |
 | Elastic net with interaction variables       | 272.9989      |
+
+<p align="justify">
+We can see that linear models without taking into account interactions, as well as the CART, are the least performing models. Then, we can see that the integration of interaction variables in linear models have greatly improved their performances. Among them, the best performing is the Ridge, which is at the same level as the Random Forest. However, the best performing model is the XGBoost.
+</p>
 
 ### 5. Optimization and analysis of the model
 
