@@ -100,7 +100,6 @@ Of course, we will not be able to consider all the classes of regression models.
 **Results :**
 
 <center>
-  
 | Model                                        | RMSE          |
 | :------------------------------------------- | ------------: |
 | Random Forest                                | 267.1256      |
@@ -112,7 +111,6 @@ Of course, we will not be able to consider all the classes of regression models.
 | LASSO regression with interaction variables  | 274.9008      |
 | Ridge regression with interaction variables  | 267.2635      |
 | Elastic net with interaction variables       | 272.9989      |
-
 </center>
   
 <p align="justify">
