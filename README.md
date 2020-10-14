@@ -145,12 +145,14 @@ The graph below shows attendance for 2016 in black and our model's predictions i
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Number%20of%20visitors%20-%20prediction%20vs%20real%20(2018).jpeg" alt="Predict"	title="Number of visitors - prediction vs real (2018)" width="800" height="400" />
 </p>
 
-<p align="center">
-  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Error%20as%20a%20proportion%20of%20the%20number%20of%20visitors.jpeg" alt="Error proportion"	title="Error as a proportion of the number of visitors" width="325" height="325" />
-  <p align="justify">
-  The second graph shows the distribution of errors, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
-  </p>
+
+
+
+<img align="right" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Error%20as%20a%20proportion%20of%20the%20number%20of%20visitors.jpeg" alt="Error proportion"	title="Error as a proportion of the number of visitors" width="325" height="325" />
+<p align="justify">
+The second graph shows the distribution of errors, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
 </p>
+
 
 **Use of the covariates :**
 
