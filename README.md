@@ -54,7 +54,7 @@ Finally, we remove the months from november to march to focus only on the main p
 
 ### 3. A few statistics 
 
-In this section, we will try to see how our covariates relate to attendance, using bivariate plots. 
+In this section, we will try to see how our covariates relate to attendance, using bivariate graphs. 
 
 <p align="justify">
 <strong>Maximum temperature of the day :</strong> We can see on the first graph on the left the maximum temperature on the x-axis and the difference to seasonality on the y-axis, each point representing a day in our dataset. The variance of the deviation from seasonality is important but we can still distinguish an interesting trend : the frequentation tends to be more and more important compared to the seasonality when the temperature rises. This trend continues up to a threshold, around 28°C, from which the trend is reversed : each additional degree seems to reduce attendance. 
@@ -90,8 +90,13 @@ We will not walk through all of the variables here, but these early observations
 ### 4. Selection of the best class of models
 
 <p align="justify">
-The objective of this part is to identify the class of models that performs best on our dataset. We will simply train a model of each classes, without much optimization, and compare they in order to identify the class that seem the more suited to our task. We will evaluate our models by their predictive qualities empirically on the test data set. The performance evaluation metric will be the ordinary least squares. Of course, we will not be able to consider all the classes of regression models. We will only focus on tree based methods as well as linear models. Specifically a CART, a random forest, and an XGBoost for tree-based methods. And linear regression, as well as its Ridge and LASSO extensions for linear models. For linear models, we will also feed them with "interaction variables" in addition to the starting variables in order to help them capture the interactions between variables (which they can't do on their own like tree-based methods). These simply consist of the product of all possible pairs of variables. Even if it's only second order interactions, the number of pairs is very large and therefore the selection of useful variables is very important. 
+The objective of this part is to identify the class of models that performs best on our dataset. We will simply train a model of each classes, without much optimization, and compare they in order to identify the class that seem the more suited to our task. We will evaluate our models by their predictive qualities empirically on the test data set. The performance evaluation metric will be the ordinary least squares. 
 </p>
+
+<p align="justify">
+Of course, we will not be able to consider all the classes of regression models. We will only focus on tree based methods as well as linear models. Specifically a CART, a random forest, and an XGBoost for tree-based methods. And linear regression, as well as its Ridge and LASSO extensions for linear models. For linear models, we will also feed them with "interaction variables" in addition to the starting variables in order to help them capture the interactions between variables (which they can't do on their own like tree-based methods). These simply consist of the product of all possible pairs of variables. Even if it's only second order interactions, the number of pairs is very large and therefore the selection of useful variables is very important. 
+</p>
+
 **Results :**
 
 | Model                                        | RMSE          |
@@ -112,7 +117,17 @@ We can see that linear models without taking into account interactions, as well 
 
 ### 5. Optimization and analysis of the model
 
-Best model :
+<p align="justify">
+In this part, we will start by optimizing the hyper-parameters of our XGBoost in order to minimize the RMSE criterion on our test set. Then, we will analyze the results of the model as well as its use of the covariates.
+</p>
+
+**Optimization :**
+
+<p align="justify">
+The XGBoost algorithm is laborious to optimize because of its numerous hyper-parameters. We proceed by random grid search, with 300 sets of hyper-parameters at first, then we focus on the most promising hyper-parameter area for a second grid of 300 sets of hyper-parameters. 
+</p>
+
+**Best performing hyper-parameters set :**
 
 | num trees |  eta      | gamma    | max_depth | subsample | colsample_bytree | min_child_weight | **RMSE**     |
 |:---------:|:---------:|:--------:|:---------:|:---------:|:----------------:|:----------------:|:------------:|
@@ -120,14 +135,23 @@ Best model :
 
 
 
+**Visualizations of our results :**
 
+<p align="justify">
+The graph below shows attendance for 2016 in black and our model's predictions in green. We can see that our predictions are overall very satisfactory. The only big mistake made by the model is on the first weekend of July, which is a "Mille feux" weekend (the most popular event in Villandry), where the predictions are far below reality. For the years 2017 and 2018, we find the same pattern : the prediction error is low for "classic" days, however, for certain particular days, with spikes in attendance, the model makes significant errors. The model seems to identify these particular days but its predictions are sometimes very far from reality. It seems that the attendance on these particular days has a very large variance and that the variables available to us are not sufficient to explain all this variance, which sometimes leads to significant errors.
+</p>
+  
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Number%20of%20visitors%20-%20prediction%20vs%20real%20(2018).jpeg" alt="Predict"	title="Number of visitors - prediction vs real (2018)" width="800" height="400" />
 </p>
+
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Error%20as%20a%20proportion%20of%20the%20number%20of%20visitors.jpeg" alt="Error proportion"	title="Error as a proportion of the number of visitors" width="325" height="325" />
+  <p align="justify">
+  The second graph shows the distribution of errors, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
+  </p>
 </p>
 
-
+**Use of the covariates :**
 
 
