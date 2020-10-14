@@ -101,7 +101,7 @@ Of course, we will not be able to consider all the classes of regression models.
 
 <center>
 | Model                                        | RMSE          |
-| :------------------------------------------- | ------------: |
+| -------------------------------------------- | :-----------: |
 | Random Forest                                | 267.1256      |
 | **Xgboost**                                  | **250.3095**  |
 | CART                                         | 312.4196      |
