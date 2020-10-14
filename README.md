@@ -93,6 +93,7 @@ We will not walk through all of the variables here, but these early observations
 The objective of this part is to identify the class of models that performs best on our dataset. We will simply train a model of each classes, without much optimization, and compare they in order to identify the class that seem the more suited to our task. We will evaluate our models by their predictive qualities empirically on the test data set. The performance evaluation metric will be the ordinary least squares. Of course, we will not be able to consider all the classes of regression models. We will only focus on tree based methods as well as linear models. Specifically a CART, a random forest, and an XGBoost for tree-based methods. And linear regression, as well as its Ridge and LASSO extensions for linear models. For linear models, we will also feed them with "interaction variables" in addition to the starting variables in order to help them capture the interactions between variables (which they can't do on their own like tree-based methods). These simply consist of the product of all possible pairs of variables. Even if it's only second order interactions, the number of pairs is very large and therefore the selection of useful variables is very important. 
 </p>
 **Results :**
+
 | Model                                        | RMSE          |
 | -------------------------------------------- |:-------------:|
 | Random Forest                                | 267.1256      |
