@@ -151,7 +151,7 @@ The graph above shows attendance for 2016 in black and our model's predictions i
 The second graph shows the distribution of errors on our test set, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
 </p>
 <p align="justify">
-Warning : we probably have overfitted our model on our test set by trying a lot of hyper-parameters and this distribution of error might be slightly worst for real predictions. To prevent this, we could have optimized our model by cross-validation and keep our test set only for the final evaluation. 
+Warning : we probably have a little bit overfitted our model on our test set by trying a lot of hyper-parameters and this distribution of error might be slightly worst for real predictions. To prevent this, we could have optimized our model by cross-validation and kept our test set only for the final evaluation. 
 </p>
 
 
