@@ -124,7 +124,7 @@ In this part, we will start by optimizing the hyper-parameters of our XGBoost in
 **Optimization :**
 
 <p align="justify">
-The XGBoost algorithm is laborious to optimize because of its numerous hyper-parameters. We proceed by random grid search, with 300 sets of hyper-parameters at first, then we focus on the most promising hyper-parameter area for a second grid of 300 sets of hyper-parameters. 
+The XGBoost algorithm is laborious to optimize because of its numerous hyper-parameters. We proceed by random grid search, with 300 sets of hyper-parameters at first, then we focus on the most promising hyper-parameter area with a second grid of 300 sets of hyper-parameters. 
 </p>
 
 Best performing hyper-parameters set :
@@ -148,7 +148,10 @@ The graph above shows attendance for 2016 in black and our model's predictions i
 </p>
 
 <p align="justify">
-The second graph shows the distribution of errors, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
+The second graph shows the distribution of errors on our test set, in proportion to the number of visitors of the day. We see that almost 1 out of 2 predictions has an error lower than 10%, almost 3 predictions out of 4 have an error of lower than 20%, and 9 out of 10 predictions have an error lower than 30%. 
+</p>
+<p align="justify">
+Warning : we probably have overfitted our model on our test set by trying a lot of hyper-parameters and this distribution of error might be slightly worst for real predictions. To prevent this, we could have optimized our model by cross-validation and keep our test set only for the final evaluation. 
 </p>
 
 
