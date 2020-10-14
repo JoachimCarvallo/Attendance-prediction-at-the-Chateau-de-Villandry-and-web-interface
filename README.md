@@ -101,9 +101,9 @@ Of course, we will not be able to consider all the classes of regression models.
 
 | Model                                        | RMSE          |
 | -------------------------------------------- | :-----------: |
+| CART                                         | 312.4196      |
 | Random Forest                                | 267.1256      |
 | **Xgboost**                                  | **250.3095**  |
-| CART                                         | 312.4196      |
 | Linear regression                            | 312.459       |
 | LASSO regression                             | 313.1293      |
 | Linear regression with interaction variables | 269.3086      |
