@@ -99,8 +99,10 @@ Of course, we will not be able to consider all the classes of regression models.
 
 **Results :**
 
+<center>
+  
 | Model                                        | RMSE          |
-| -------------------------------------------- |:-------------:|
+| :------------------------------------------- | ------------: |
 | Random Forest                                | 267.1256      |
 | **Xgboost**                                  | **250.3095**  |
 | CART                                         | 312.4196      |
@@ -111,6 +113,8 @@ Of course, we will not be able to consider all the classes of regression models.
 | Ridge regression with interaction variables  | 267.2635      |
 | Elastic net with interaction variables       | 272.9989      |
 
+</center>
+  
 <p align="justify">
 We can see that linear models without taking into account interactions, as well as the CART, are the least performing models. Then, we can see that the integration of interaction variables in linear models have greatly improved their performances. Among them, the best performing is the Ridge, which is at the same level as the Random Forest. However, the best performing model is the XGBoost.
 </p>
