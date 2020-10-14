@@ -127,7 +127,7 @@ In this part, we will start by optimizing the hyper-parameters of our XGBoost in
 The XGBoost algorithm is laborious to optimize because of its numerous hyper-parameters. We proceed by random grid search, with 300 sets of hyper-parameters at first, then we focus on the most promising hyper-parameter area for a second grid of 300 sets of hyper-parameters. 
 </p>
 
-**Best performing hyper-parameters set :**
+Best performing hyper-parameters set :
 
 | num trees |  eta      | gamma    | max_depth | subsample | colsample_bytree | min_child_weight | **RMSE**     |
 |:---------:|:---------:|:--------:|:---------:|:---------:|:----------------:|:----------------:|:------------:|
