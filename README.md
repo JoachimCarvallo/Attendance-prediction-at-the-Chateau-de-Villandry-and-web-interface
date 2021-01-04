@@ -157,4 +157,5 @@ Warning : we probably have a little bit overfitted our model on our test set by 
 
 **Use of the covariates :**
 
+To be continued...
 ### 6. R-shiny app 
