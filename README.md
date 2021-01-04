@@ -8,7 +8,7 @@ The objective of this project is to produce a model that predict the number of v
   
 [Here is a link to check the web app.](https://joachimcarvallo.shinyapps.io/pred-freq-villandry/) It is in french (as well as the variables names) because it is meant to be used by a french user. The app must be updated to work properly.
 
-## Quick overview of the project :
+## Overview of the project :
 
 ### 1. Webscraping of historical weather data
 
