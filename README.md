@@ -157,6 +157,25 @@ Warning : we probably have a little bit overfitted our model on our test set by 
 
 **Use of the covariates :**
 
+<img align="left" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Importance%20of%20variables.jpeg" alt="Importance of variables"	title="Importance of variables" width="600" height="600" />
+
+
+
+<p align="center">
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Difference%20from%20the%20seasonality%20of%20the%20day%20before.jpeg" alt="Difference from seasonality"	title="Shap - Difference from the seasonality of the day before" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Sunday.jpeg" alt="Sundays"	title="Shap - Sunday" width="260" height="260" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Weather%20grade.jpeg" alt="Weather grade"	title="Shap - Weather grade" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Difference%20from%20the%20seasonality%20day%20-%207.jpeg" alt="Day - 7"	title="Shap - Difference from the seasonality day - 7" width="390" height="260" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Precipitations.jpeg" alt="Precipitations"	title="Shap - Precipitations" width="390" height="260" />
+  <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Maximum%20temperature.jpeg" alt="Maximum temperature"	title="Shap - Maximum temperature" width="390" height="260" />
+</p>
+
 ### 6. R-shiny app 
 
 To be continued...
