@@ -157,7 +157,7 @@ Warning : we probably have a little bit overfitted our model on our test set by 
 
 **Use of the covariates :**
 
-<img align="left" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Importance%20of%20variables.jpeg" alt="Importance of variables"	title="Importance of variables" width="600" height="600" />
+<img align="left" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Importance%20of%20variables.jpeg" alt="Importance of variables"	title="Importance of variables" width="450" height="450" />
 
 
 
