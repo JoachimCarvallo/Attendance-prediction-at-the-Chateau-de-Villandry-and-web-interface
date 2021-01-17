@@ -1,0 +1,350 @@
+---
+title: "Optimization and analysis of the model"
+author: "Joachim CARVALLO"
+date: "9 décembre 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Loading libraries and data
+```{r}
+library('caret') # Library for dummy variables and RMSE
+library('xgboost') # Library for Xgboost
+library('lubridate') # Library for date management
+library('ggplot2') # Library for data visualization
+library('dplyr') # Library for dataframe manipulations
+library("SHAPforxgboost") # Library implementing Shap value
+
+# Loading data
+load("Donnees pretes pour modelisation.Rdata")
+
+# Factor variables to dummy variables
+DATE <- visiteurs_test$DATE
+dmy <- dummyVars( ~. , data = visiteurs[,-1], fullRank = T)
+visiteurs <- data.frame(predict(dmy, newdata = visiteurs))
+dmy <- dummyVars( ~. , data = visiteurs_test[,-1], fullRank = T)
+visiteurs_test <- data.frame(predict(dmy, newdata = visiteurs_test))
+visiteurs$descr_generalePas.d.obs <- NULL # This doesn't occur in the test set 
+
+# Data in the right format
+dtrain <- xgb.DMatrix(data = as.matrix(visiteurs[,-33]), label=as.matrix(visiteurs$ecart_sais))
+dtest <- xgb.DMatrix(data = as.matrix(visiteurs_test[,-33]), label=as.matrix(visiteurs_test$ecart_sais))
+watchlist <- list(train=dtrain, test=dtest)
+```
+
+
+# Optimization of the model 
+
+## First round 
+```{r}
+# Random grid of parameters :
+n <- 300 # size of the grid
+random_grid <- data.frame(
+                          eta = 0.02,
+                          gamma = 10^(runif(n, min = -3, max = 2)),
+                          max_depth = sample(1:12, size = n, replace = T),
+                          subsample = runif(n, min = 0.3, max = 1),
+                          colsample_bytree = runif(n, min = 0.3, max = 1),
+                          min_child_weight = 10^(runif(n, min = -3, max = 2)),
+                          RMSE = 0
+)
+
+for(i in 1:n){
+  params <- as.list(random_grid[i,])
+  
+  # Training :
+  xgb <- xgb.train(params = params, data = dtrain, watchlist=watchlist, objective = "reg:squarederror", 
+                   verbose = 0, nthread = 3, nrounds = 10000, early_stopping_rounds = 250)
+  random_grid$RMSE[i] <- xgb$best_score
+  print(i)
+}
+
+#save(random_grid, file = "Grille d'optimisation des paramètres du XGBoost_1.Rdata")
+```
+
+Best model :
+
+| Parameter 	     |  Value      |
+| ---------------- |:-----------:|
+| eta              | 0.02        |
+| gamma            | 0.513787589 |
+| max_depth        | 8           |
+| subsample        | 0.4299943   |
+| colsample_bytree | 0.4935486   |
+| min_child_weight | 4.141807383 |
+| *RMSE*           | *241.5967*  |
+
+## Second round 
+```{r}
+# New random grid of parameters :
+n <- 300 # size of the grid
+random_grid_2 <- data.frame(
+                          eta = 0.01,
+                          gamma = 10^(runif(n, min = -1.5, max = 0.5)),
+                          max_depth = sample(6:10, size = n, replace = T),
+                          subsample = runif(n, min = 0.35, max = .7),
+                          colsample_bytree = runif(n, min = 0.4, max = .6),
+                          min_child_weight = 10^(runif(n, min = -0.5, max = 1.5)),
+                          RMSE = 0
+)
+
+for(i in 1:n){
+  params <- as.list(random_grid_2[i,])
+  # Training :
+  xgb <- xgb.train(params = params, data = dtrain, watchlist=watchlist, objective = "reg:squarederror", 
+                   verbose = 0, nthread = 3, nrounds = 10000, early_stopping_rounds = 250)
+  random_grid_2$RMSE[i] <- xgb$best_score
+  print(i)
+}
+
+#save(random_grid_2, file = "Grille d'optimisation des paramètres du XGBoost_2.Rdata")
+```
+
+Best model :
+
+| Parameter 	     |  Value      |
+| ---------------- |:-----------:|
+| eta              | 0.01        |
+| gamma            | 0.74593472  |
+| max_depth        | 7           |
+| subsample        | 0.4751654   |
+| colsample_bytree | 0.5389854   |
+| min_child_weight | 6.2127380   |
+| *RMSE*           | *240.0006*  |
+
+## Final model 
+```{r}
+params <- as.list(random_grid_2[which.min(random_grid_2$RMSE), 1:6])
+
+# Final training :
+xgb <- xgb.train(params = params, data = dtrain, watchlist=watchlist, objective = "reg:squarederror", 
+                   verbose = 2, nthread = 3, nrounds = 10000, early_stopping_rounds = 250)
+
+# RMSE vs number of iterations :
+ggplot(xgb$evaluation_log) + geom_line(aes(x = iter, y= test_rmse)) + 
+  geom_line(aes(x = iter, y= train_rmse), color = "red") + theme_bw()
+
+# Save final model 
+#save(xgb, file = "C:/Users/joach/OneDrive/Bureau/Visites Villandry/XGBoost prevision freq Villandry - V3.Rdata")
+```
+
+
+# Error analysis 
+```{r}
+load("Donnees pretes pour modelisation.Rdata")
+
+# Make prediction on test set and compute RMSE
+visiteurs_test$predict <- predict(xgb, dtest)
+
+# Plot of the real attendance against predicted for 2016
+ggplot(visiteurs_test[year(visiteurs_test$DATE)==2016,]) + 
+  geom_line(aes(x = DATE, y = predict + saison), col="green3") + 
+  geom_line(aes(x = DATE, y = ecart_sais + saison)) +  
+  theme_bw() +labs(x = "Date (2018)", y = "Number of visitors : prediction vs real")
+
+# Répartition des écarts : 
+ggplot(visiteurs_test) + geom_density(aes(x = ecart_sais - predict), fill = "grey") + theme_bw()
+
+# Percentage distribution of errors : (density)
+visiteurs_test$prop <- (visiteurs_test$predict - visiteurs_test$ecart_sais)*100/(visiteurs_test$saison + visiteurs_test$ecart_sais)
+ggplot(visiteurs_test) + geom_density(aes(x = prop), fill = "grey") + theme_bw()
+
+mean(abs(visiteurs_test$prop) < 7) # 33,3% du temps 
+mean(abs(visiteurs_test$prop) < 17) # 66,9% du temps 
+mean(abs(visiteurs_test$prop) < 27) # 84,6% du temps 
+mean(abs(visiteurs_test$prop) < 40) # 95% du temps
+
+# Percentage distribution of errors : (bar plot)
+prop <- c(mean(abs(visiteurs_test$prop)<10), mean(abs(visiteurs_test$prop)>10 & abs(visiteurs_test$prop)<20),
+  mean(abs(visiteurs_test$prop)>20 & abs(visiteurs_test$prop)<30), 
+  mean(abs(visiteurs_test$prop)>30 & abs(visiteurs_test$prop)<40),
+  mean(abs(visiteurs_test$prop)>40 & abs(visiteurs_test$prop)<60), 
+  mean(abs(visiteurs_test$prop)>60 & abs(visiteurs_test$prop)<80),mean(abs(visiteurs_test$prop)>80))
+
+temp <- data.frame(prop =  prop, prop_erreur = c("< 10%","< 20%","< 30%","< 40%","< 60%", "< 80%", "> 80%"))
+
+ggplot(temp) + 
+  geom_bar(aes(x = prop_erreur, y = prop), stat = "identity", fill = "green3", alpha = .5, col = "black") +
+  scale_y_continuous(breaks = c("40%"=0.4, "30%"=0.3, "20%"=0.2, "10%"=0.1, "3%"=0.03)) + theme_bw() + 
+  labs(x = "Error as a proportion of the number of visitors", y = "Volume")
+```
+
+
+
+
+# Analysis of the model
+
+## SHAP importance and dependence plot
+```{r}
+load("C:/Users/joach/OneDrive/Bureau/Visites Villandry/XGBoost prevision freq Villandry - V3.Rdata")
+
+
+### SHAP importance plot :
+
+temp <- shap_long %>% group_by(variable) %>% summarise(mean_value = mean_value[1])
+ggplot(temp[temp$mean_value > 7,]) + 
+  geom_bar(aes(x = reorder(variable, mean_value), y = mean_value), stat = "identity", fill = "green3", alpha = .5) +
+  coord_flip() + theme_bw() + labs(x = "Variables", y = "Mesure of the importance of variables")
+
+### SHAP dependence plot :
+
+# Difference from the seasonality of the day before :
+ggplot(shap_long[shap_long$variable == "ecart_prec_1",], aes(x = rfvalue, y = value)) + 
+  geom_point(cex = 1, alpha = .3) + geom_smooth(method = "loess", col = "green3") + 
+  theme_bw() + labs(x = "Difference from the seasonality of the day before", y = "SHAP value")
+# Sundays :
+ggplot(shap_long[shap_long$variable == "Jour.7",], aes(x = as.logical(rfvalue), y = value)) + 
+  geom_boxplot(fill = "green3", alpha = .5) + theme_bw() + labs(x = "Sunday ?", y = "SHAP value")
+# Weather grade :
+ggplot(shap_long[shap_long$variable == "note_temps",], aes(x = rfvalue, y = value)) + 
+  geom_point(cex = 1, alpha = .3) + geom_smooth(method = "loess", col = "green3") + 
+  theme_bw() + labs(x = "Weather grade", y = "SHAP value")
+# Difference from the seasonality : day - 7 :
+ggplot(shap_long[shap_long$variable == "ecart_prec_7",], aes(x = rfvalue, y = value)) + 
+  geom_point(cex = 1, alpha = .3) + geom_smooth(method = "loess", col = "green3") + 
+  theme_bw() + labs(x = "Difference from the seasonality : day - 7", y = "SHAP value")
+# Precipitation :
+ggplot(shap_long[shap_long$variable == "Precipitation",], aes(x = rfvalue+1, y = value)) + 
+  geom_point(cex = 1, alpha = .3) + geom_smooth(method = "loess", col = "green3") + scale_x_continuous(trans = "log10") +
+  theme_bw() + labs(x = "Precipitation", y = "SHAP value")
+# Maximum temperature :
+ggplot(shap_long[shap_long$variable == "Temp.max",], aes(x = rfvalue, y = value)) + 
+  geom_point(cex = 1, alpha = .3) + geom_smooth(method = "loess", col = "green3") + 
+  theme_bw() + labs(x = "Maximum temperature", y = "SHAP value")
+# Middle of a 4 days weekend :
+ggplot(shap_long[shap_long$variable == "wkd_4j_milieuTRUE",], aes(x = as.logical(rfvalue), y = value)) + 
+  geom_boxplot(fill = "green3", alpha = .5) + theme_bw() + labs(x = "Middle of a 4-day weekend ?", y = "SHAP value")
+```
+
+## SHAP interaction effect plot
+```{r}
+# Maximum temperature :
+variable <- "Temp.max"
+
+intercations_moy <- apply(abs(shap_int[,,variable]), 2, mean)
+interaction_1 <- names(which.max(intercations_moy[names(intercations_moy) != variable]))
+interaction_2 <- names(which.max(intercations_moy[!(names(intercations_moy) %in% c(variable, interaction_1))]))
+
+temp <- data.frame(rfvalue = visiteurs[,variable], 
+                   main_effect = shap_int[,variable,variable], 
+                   interaction_1 = shap_int[,interaction_1,variable], 
+                   interaction_2 = shap_int[,interaction_2,variable],
+                   rfvalue_interaction_1 = visiteurs[,interaction_1], 
+                   rfvalue_interaction_2 = visiteurs[,interaction_2])
+
+ggplot(temp, aes(x = rfvalue, y = main_effect)) + geom_point(cex = 1, alpha = .3) + 
+  geom_smooth(method = "loess", col = "green3") +  theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Main effect")
+
+ggplot(temp, aes(x = rfvalue, y = interaction_1, col = rfvalue_interaction_1+1)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c(trans = "log10") + theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Interaction with precipitations", col = "Precipitations")
+ggplot(temp, aes(x = rfvalue, y = main_effect+interaction_1, col = rfvalue_interaction_1+1)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c(trans = "log10") + theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Interaction with precipitations", col = "Precipitations")
+
+ggplot(temp, aes(x = rfvalue, y = interaction_2, col = rfvalue_interaction_2)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c() + theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Interaction with weather grade", col = "Weather grade")
+ggplot(temp, aes(x = rfvalue, y = main_effect+interaction_2, col = rfvalue_interaction_2)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c() + theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Interaction with weather grade", col = "Weather grade")
+
+
+# Precipitations :
+variable <- "Precipitation"
+
+intercations_moy <- apply(abs(shap_int[,,variable]), 2, mean)
+interaction_1 <- names(which.max(intercations_moy[names(intercations_moy) != variable]))
+interaction_2 <- names(which.max(intercations_moy[!(names(intercations_moy) %in% c(variable, interaction_1))]))
+
+temp <- data.frame(rfvalue = visiteurs[,variable], main_effect = shap_int[,variable,variable], 
+                   interaction_1 = shap_int[,interaction_1,variable], 
+                   interaction_2 = shap_int[,interaction_2,variable], 
+                   rfvalue_interaction_1 = visiteurs[,interaction_1], 
+                   rfvalue_interaction_2 = visiteurs[,interaction_2])
+
+ggplot(temp, aes(x = rfvalue, y = main_effect)) + geom_point(cex = 1, alpha = .3) + 
+  geom_smooth(method = "loess", col = "green3") + theme_bw() + 
+  labs(x = "Maximum temperature", y = "SHAP value - Main effect")
+
+ggplot(temp, aes(x = rfvalue+1, y = interaction_1, col = rfvalue_interaction_1+1)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c() + scale_x_continuous(trans = "log10") + 
+  theme_bw() + labs(x = "Precipitations", y = "SHAP value - Interaction with weather grade", col = "Weather grade")
+ggplot(temp, aes(x = rfvalue+1, y = main_effect+interaction_1, col = rfvalue_interaction_1+1)) + 
+  geom_point(cex = 1, alpha = .3) + scale_color_viridis_c() + scale_x_continuous(trans = "log10") + theme_bw() + 
+  labs(x = "Precipitations", y = "SHAP value - Interaction with weather grade", col = "Weather grade")
+
+ggplot(temp, aes(x = rfvalue+1, y = interaction_2, col = rfvalue_interaction_2)) + 
+  geom_point(cex = 1, alpha = .3) + scale_x_continuous(trans = "log10") + scale_color_viridis_c() + theme_bw() + 
+  labs(x = "Precipitations", y = "SHAP value - Interaction with seasonality", col = "Seasonality")
+ggplot(temp, aes(x = rfvalue+1, y = main_effect+interaction_2, col = rfvalue_interaction_2)) + 
+  geom_point(cex = 1, alpha = .3) + scale_x_continuous(trans = "log10") + scale_color_viridis_c() + theme_bw() + 
+  labs(x = "Precipitations", y = "SHAP value - Interaction with seasonality", col = "Seasonality")
+```
+
+## Water fall
+```{r}
+threshold = 10
+data = visiteurs_test[81,]
+
+dtest <- xgb.DMatrix(data = as.matrix(data[-33]), label=as.matrix(data$ecart_sais))
+explain_obs <- predict(xgb, dtest, predcontrib = TRUE, approxcontrib = FALSE)
+
+# Get data
+breakdown_summary = explain_obs[1,-46]
+weight = rowSums(explain_obs)
+labels = names(breakdown_summary)
+data_for_label = round(as.matrix(data[-33]), 1)
+Biais = explain_obs[46]
+
+# Order on contribution value
+i = order(abs(breakdown_summary), decreasing = TRUE)
+breakdown_summary = breakdown_summary[i]
+data_for_label = data_for_label[i]
+
+# Regroup variables with impact < threshold
+i_other = which(abs(breakdown_summary) < threshold)
+other_impact = 0
+other_impact = sum(breakdown_summary[i_other])
+names(other_impact) = "other"
+breakdown_summary = breakdown_summary[-i_other]
+data_for_label = data_for_label[-i_other]
+
+# Regroup everything
+breakdown_summary = c(Biais, breakdown_summary, other_impact)
+data_for_label = c("", data_for_label, "")
+labels = paste0(names(breakdown_summary), " = ", data_for_label)
+labels[1] = "Biais"
+labels[length(labels)] = "Other"
+
+# Defini colors 
+fill_colours  <- rep("green3", length(breakdown_summary))
+fill_colours[sign(breakdown_summary) == -1] <- "grey"
+
+# Plot the waterfall
+waterfalls::waterfall(values = breakdown_summary, 
+                      rect_text_labels = round(breakdown_summary, 0), 
+                      labels = labels, 
+                      total_rect_text = round(weight, 0), 
+                      calc_total = TRUE, 
+                      total_axis_text = "Prediction", 
+                      fill_by_sign = F, 
+                      fill_colours = fill_colours) + 
+  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        panel.background = element_rect("white", "black"),
+        panel.grid.major = element_line("grey"), 
+        panel.grid.minor = element_line(color = "grey", size = .2)) +
+  
+  labs(title = paste(c("Résultat = Saisonnalité + Prédiction =", 
+                       as.character(round(data$saison)), 
+                       "+", 
+                       as.character(round(sum(explain_obs))), 
+                       "=", 
+                       as.character(round(data$saison+sum(explain_obs)))), 
+        collapse = " "))
+```
