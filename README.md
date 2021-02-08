@@ -157,6 +157,23 @@ Warning : we probably have a little bit overfitted our model on our test set by 
 
 **Use of the covariates :**
 
+
+La valeur de SHAP, pour \textit{SHapley Additive exPlanation} \cite{lundberg2017shap}, est inspirée de la valeur de Shapley, elle même issue de la théorie des jeux, et qui propose une méthode de répartition équitable des gains réalisés par une coalition de joueurs. La valeur de SHAP permet d'expliquer la sortie d'un modèle $f(x)$ pour un individu $x$, comme la somme des effets $ \phi_i$ de chacune des variables explicatives. Les variables explicatives sont introduites une par une dans l'espérance conditionnelle $E[f(x) \mid x_1, .., x_i]$, $\phi_i$ étant la modification de l'espérance conditionnelle lorsque la $i^{ème}$ variable, $x_i$, est ajoutée. La valeur de SHAP permet donc d'expliquer comment passer de la prédiction de base, $E[f(x)]$, que le modèle ferait sans variable explicative, à la prédiction $f(x)$.
+
+\noindent
+La figure \ref{shapexplication} montre un ordre d'introduction des variables particulier. Lorsque le modèle n'est pas linéaire (comme pour le XGBoost), ou que les variables explicatives ne sont pas indépendantes (comme dans notre cas), alors l'ordre dans lequel les variables sont ajoutées dans l'espérance influence la valeur des $\phi_i$. La valeur de SHAP est en réalité la moyenne des $\phi_i$ pour tous les ordre d'introduction des variables possibles. Elle est définie, pour une variable $i$ :
+
+\[ \phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{\lvert S \rvert ! (M - \lvert S \rvert - 1)!}{M!}(E[f(x) \mid x_{S \cup \{i\}}] - E[f(x) \mid x_S]) \] 
+
+\noindent
+Où $N$ est l'ensemble contenant tous les indices des variables explicatives et $M$ le nombre de variables.  
+
+\bigskip
+
+Ainsi, la valeur de SHAP permet d'expliquer une prédiction faite par un modèle trop complexe pour être directement analysée. De plus, en moyennant les valeurs absolues des valeurs SHAP sur l'ensemble d'un jeu de données, nous pouvons obtenir la mesure de l'importance globale des variables. Dans \cite{lundberg2017shap} sont démontrées les très bonnes propriétés de la valeur de SHAP. Cependant, sont usage en pratique est difficile car elle est extrêmement coûteuse en temps de calculs. Dans \cite{lundberg2018shap} est proposé un algorithme permettant de calculer la valeur de SHAP pour des méthodes ensemblistes basées sur des arbres de façon beaucoup plus rapide. Nous utiliserons ici l'implémentation sous R de la valeur de SHAP des librairies \textit{xgboost} et \textit{SHAPforxgboost}.
+
+
+
 <img align="left" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Importance%20of%20variables.jpeg" alt="Importance of variables"	title="Importance of variables" width="450" height="450" />
 
 
