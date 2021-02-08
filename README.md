@@ -163,7 +163,7 @@ La valeur de SHAP, pour \textit{SHapley Additive exPlanation} \cite{lundberg2017
 \noindent
 La figure \ref{shapexplication} montre un ordre d'introduction des variables particulier. Lorsque le modèle n'est pas linéaire (comme pour le XGBoost), ou que les variables explicatives ne sont pas indépendantes (comme dans notre cas), alors l'ordre dans lequel les variables sont ajoutées dans l'espérance influence la valeur des $\phi_i$. La valeur de SHAP est en réalité la moyenne des $\phi_i$ pour tous les ordre d'introduction des variables possibles. Elle est définie, pour une variable $i$ :
 
-\[ \phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{\lvert S \rvert ! (M - \lvert S \rvert - 1)!}{M!}(E[f(x) \mid x_{S \cup \{i\}}] - E[f(x) \mid x_S]) \] 
+$$ \phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{\lvert S \rvert ! (M - \lvert S \rvert - 1)!}{M!}(E[f(x) \mid x_{S \cup \{i\}}] - E[f(x) \mid x_S]) $$
 
 \noindent
 Où $N$ est l'ensemble contenant tous les indices des variables explicatives et $M$ le nombre de variables.  
