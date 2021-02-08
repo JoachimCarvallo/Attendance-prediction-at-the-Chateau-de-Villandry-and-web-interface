@@ -168,17 +168,14 @@ First, by averaging the absolute values SHAP values over an entire dataset, we c
 
 <img align="left" src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Importance%20of%20variables.jpeg" alt="Importance of variables"	title="Importance of variables" width="450" height="450" />
 
-
+<p align="justify">
+We will now try to understand the local impact of each of the variables, using the SHAP value. The SHAP value quantifies for each of the individuals in the test set, the impact on the prediction of each of the variables (in number of visitors). In the following graphs, each point represents an individual with on the x-axis the value of the variable for this individual, and on the y-axis the impact that this variable had on the prediction . We can generally observe a trend which makes the link between the values taken by the variable and its impact on the prediction. The variations around the trend are explained by the interactions that there may be between the different variables.
+</p>
 
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Difference%20from%20the%20seasonality%20of%20the%20day%20before.jpeg" alt="Difference from seasonality"	title="Shap - Difference from the seasonality of the day before" width="390" height="260" />
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Sunday.jpeg" alt="Sundays"	title="Shap - Sunday" width="260" height="260" />
 </p>
-
-<p align="justify">
-We will now try to understand the local impact of each of the variables, using the SHAP value. The SHAP value quantifies for each of the individuals in the test set, the impact on the prediction of each of the variables (in number of visitors). In the following graphs, each point represents an individual with on the x-axis the value of the variable for this individual, and on the y-axis the impact that this variable had on the prediction . We can generally observe a trend which makes the link between the values taken by the variable and its impact on the prediction. The variations around the trend are explained by the interactions that there may be between the different variables.
-</p>
-
 
 <p align="center">
   <img src="https://github.com/JoachimCarvallo/Attendance-prediction-at-the-Chateau-de-Villandry-and-web-interface/blob/main/Plots/5.%20Optimization%20and%20analysis%20of%20the%20model/Shap%20-%20Weather%20grade.jpeg" alt="Weather grade"	title="Shap - Weather grade" width="390" height="260" />
